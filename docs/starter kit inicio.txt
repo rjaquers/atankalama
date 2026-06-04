@@ -1,0 +1,23 @@
+Starter Kit RKM v6
+
+
+* 
+* MVC completo (Router, Controller/Model base, Autoload)
+* Login + middleware
+* EventDispatcher
+* PWA (manifest + service worker)
+* Offline queue + sincronización automática con aviso
+* Notificaciones multicanal (internal/email/telegram opcional)
+* Demo QR Scanner en Dashboard
+* SQL schema.sql + seed.sql con usuario admin
+* Docs: CHANGELOG.md + ARCHITECTURE.md
+* Docker (opcional)
+Notas rápidas de uso:
+* Importa sql/schema.sql y luego sql/seed.sql
+* Usuario demo: admin@rkm.local / admin123
+* Para PHPMailer: coloca los archivos en vendor/phpmailer/src/ (el kit lo detecta automáticamente). 
+* Notas rápidas de uso:
+* Importa sql/schema.sql y luego sql/seed.sql
+* Usuario demo: admin@rkm.local / admin123
+* Para PHPMailer: coloca los archivos en vendor/phpmailer/src/ (el kit lo detecta automáticamente). 
+* 

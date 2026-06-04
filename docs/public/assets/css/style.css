@@ -1,0 +1,187 @@
+/* ===================================================
+   Sistema de Contratos - Hotel Atankalama
+   Estilos personalizados
+   =================================================== */
+
+/* ------- Variables de color del sistema ------- */
+:root {
+  --atk-primary: #1a3a5c;
+  --atk-primary-light: #2c5f8a;
+  --atk-accent: #e8a838;
+  --atk-success: #28a745;
+  --atk-warning: #ffc107;
+  --atk-danger: #dc3545;
+  --atk-info: #17a2b8;
+  --atk-bg: #f4f6f9;
+  --atk-card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+body {
+  background-color: var(--atk-bg);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ------- Navbar ------- */
+.navbar-brand {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ------- Cards ------- */
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: var(--atk-card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+/* ------- KPI Cards del Dashboard ------- */
+.kpi-card {
+  border-left: 4px solid var(--atk-primary);
+  border-radius: 10px;
+}
+
+.kpi-card .kpi-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--atk-primary);
+}
+
+.kpi-card .kpi-label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kpi-card.success { border-left-color: var(--atk-success); }
+.kpi-card.success .kpi-value { color: var(--atk-success); }
+
+.kpi-card.warning { border-left-color: var(--atk-warning); }
+.kpi-card.warning .kpi-value { color: var(--atk-warning); }
+
+.kpi-card.danger { border-left-color: var(--atk-danger); }
+.kpi-card.danger .kpi-value { color: var(--atk-danger); }
+
+.kpi-card.info { border-left-color: var(--atk-info); }
+.kpi-card.info .kpi-value { color: var(--atk-info); }
+
+/* ------- Status Badges ------- */
+.badge-vigente { background-color: var(--atk-success); }
+.badge-borrador { background-color: #6c757d; }
+.badge-por_renovar { background-color: var(--atk-warning); color: #333; }
+.badge-vencido { background-color: var(--atk-danger); }
+.badge-cancelado { background-color: #343a40; }
+
+/* Payment badges */
+.badge-pagado { background-color: var(--atk-success); }
+.badge-pendiente { background-color: var(--atk-warning); color: #333; }
+.badge-parcial { background-color: var(--atk-info); }
+.badge-anulado { background-color: var(--atk-danger); }
+
+/* ------- Tables ------- */
+.table th {
+  background-color: var(--atk-primary);
+  color: white;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ------- Buttons ------- */
+.btn-atk {
+  background: linear-gradient(135deg, var(--atk-primary) 0%, var(--atk-primary-light) 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-atk:hover {
+  background: linear-gradient(135deg, var(--atk-primary-light) 0%, var(--atk-primary) 100%);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 58, 92, 0.3);
+}
+
+/* ------- Forms ------- */
+.form-control:focus, .form-select:focus {
+  border-color: var(--atk-primary-light);
+  box-shadow: 0 0 0 0.2rem rgba(44, 95, 138, 0.25);
+}
+
+/* ------- Page Header ------- */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--atk-primary);
+}
+
+.page-header h3 {
+  margin: 0;
+  color: var(--atk-primary);
+  font-weight: 600;
+}
+
+/* ------- Dropdown menus ------- */
+.dropdown-menu-dark .dropdown-item:hover {
+  background-color: var(--atk-primary-light);
+}
+
+/* ------- User Badge in Navbar ------- */
+.navbar .badge {
+  font-size: 0.7rem;
+  vertical-align: middle;
+}
+
+/* ------- Responsive ------- */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .kpi-card .kpi-value {
+    font-size: 1.5rem;
+  }
+}
+
+/* ------- Animations ------- */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ------- DataTables overrides ------- */
+.dataTables_wrapper .dataTables_filter input {
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
+  padding: 0.375rem 0.75rem;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  border-radius: 6px;
+}
+
+/* Flechas de ordenamiento visibles sobre thead oscuro */
+table.dataTable thead th::before,
+table.dataTable thead th::after {
+  opacity: 0.45 !important;
+}
+table.dataTable thead th.sorting_asc::before,
+table.dataTable thead th.sorting_desc::after {
+  opacity: 1 !important;
+}

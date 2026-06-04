@@ -1,0 +1,32 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+# ── Security Headers ────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    # Bloquea clickjacking — permite embeberse solo desde el mismo dominio
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Impide que el browser adivine el MIME type incorrecto
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Filtro XSS de browsers legados
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Controla qué Referer se envía al navegar hacia otro sitio
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Fuerza HTTPS en todos los subdominios por 1 año (activar solo en producción HTTPS)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    # Desactiva APIs de hardware que esta app no usa
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+    # CSP para archivos estáticos (CSS/JS/imágenes servidos directamente por Apache)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; font-src 'self' cdn.jsdelivr.net data:; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
+
+    # Elimina la firma del servidor (complementa ServerTokens en httpd.conf)
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>

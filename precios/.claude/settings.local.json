@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mysql --defaults-file=/dev/null -h 127.0.0.1 -u cat6852_hotel -p'$\\(cat /Volumes/disco_secundario/htdocs/shared/acceso_db.php 2>/dev/null | grep -i password | head -1\\)' cat6852_hotel_tickets -e \"SHOW TABLES LIKE 'pre_%';\")",
+      "Bash(mysql:*)",
+      "Bash(php -r ':*)",
+      "Bash(php:*)"
+    ]
+  }
+}

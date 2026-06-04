@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# Archivos y directorios existentes se sirven directo
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Resto pasa por el router
+RewriteRule ^ index.php [QSA,L]

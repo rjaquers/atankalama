@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mysql:*)",
+      "Bash(/Applications/MAMP/Library/bin/mysql -h 127.0.0.1 -u cat6852_user_incidencia -puEmF8zbcH5mJXRtOGU cat6852_incidencias -e \"\nALTER TABLE doc_spaces\n    ADD COLUMN main_image VARCHAR\\(500\\) DEFAULT NULL AFTER restrictions,\n    ADD COLUMN calendar_color VARCHAR\\(20\\) NOT NULL DEFAULT '#198754' AFTER main_image;\n\nCREATE TABLE IF NOT EXISTS doc_space_photos \\(\n    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,\n    space_id INT UNSIGNED NOT NULL,\n    file_path VARCHAR\\(500\\) NOT NULL,\n    original_name VARCHAR\\(255\\) DEFAULT NULL,\n    sort_order INT UNSIGNED NOT NULL DEFAULT 0,\n    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,\n    FOREIGN KEY \\(space_id\\) REFERENCES doc_spaces\\(id\\) ON DELETE CASCADE\n\\) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;\n\" 2>&1)",
+      "Bash(/Applications/MAMP/Library/bin/mysql -h 127.0.0.1 -u cat6852_user_incidencia -puEmF8zbcH5mJXRtOGU cat6852_incidencias -e \":*)",
+      "Bash(/Applications/MAMP/Library/bin/mysql -h 127.0.0.1 -u cat6852_user_incidencia -puEmF8zbcH5mJXRtOGU cat6852_incidencias -e \"DELETE FROM doc_spaces WHERE code=''''TEST-001'''';\")",
+      "Bash(tail -50 /Volumes/¡+0987654321q/htdocs/docs/logs/*.log)",
+      "Bash(/Applications/MAMP/Library/bin/php -v)",
+      "Bash(/Applications/MAMP/bin/php/php8.2.0/bin/php -v)",
+      "Bash(/Applications/MAMP/bin/php/php7.4.33/bin/php -v)",
+      "Bash(find /Applications/MAMP/conf -name *.conf)",
+      "Bash(xargs ls *)",
+      "Bash(grep -rn 'AuthMiddleware\\\\|PermissionMiddleware\\\\|$_SESSION\\\\['\\\\''user_id\\\\|role\\\\b\\\\|permissions' /Users/rjaquers/dev/Atankalama/docs/app/controllers/ '--include=*.php')",
+      "Bash(grep -rn 'AuthMiddleware\\\\|PermissionMiddleware\\\\|$_SESSION\\\\['\\\\''user_id\\\\|$_SESSION\\\\['\\\\''role\\\\|$_SESSION\\\\['\\\\''permissions\\\\|$_SESSION\\\\['\\\\''user_' /Users/rjaquers/dev/Atankalama/docs/app/controllers/ '--include=*.php')",
+      "WebFetch(domain:cdn.datatables.net)",
+      "Bash(grep -n \"jquery\\\\|jQuery\\\\|\\\\$\\(\" /Users/rjaquers/dev/Atankalama/docs/public/assets/js/app.js)",
+      "Bash(xargs cat)"
+    ]
+  }
+}

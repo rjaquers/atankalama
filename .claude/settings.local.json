@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(update-config)",
+      "Bash(python3 /Volumes/Mac_Secundario/htdocs/cocina/ftp_sync.py app/views/voucher/kiosko.php public/lanzar-kiosko.bat)",
+      "WebFetch(domain:www.atankalama.com)",
+      "Bash(git -C \"D:/00rje/atankalama\" status)"
+    ]
+  }
+}

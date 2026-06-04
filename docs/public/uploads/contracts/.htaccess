@@ -1,0 +1,11 @@
+# ===================================================
+# Seguridad: Permitir acceso a archivos específicos
+# ===================================================
+<FilesMatch "\.(jpg|jpeg|png|gif|pdf|webp)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Denegar el resto por seguridad
+Order deny,allow
+Deny from all

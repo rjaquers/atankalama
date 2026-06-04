@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+     <html lang="es">
+     <head>
+         <meta charset="UTF-8">
+         <title>Vista Previa Certificado - Atankalama</title>
+         <style>
+             @import
+      url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;700&family=Playfair+
+      Display:ital,wght@0,700;1,700&display=swap');
+             body { margin: 0; padding: 20px; background-color: #e0e0e0; font-family: 'Montserrat', sans-serif; display:
+      flex; justify-content: center; align-items: center; flex-direction: column; }
+             .certificate-container { width: 1000px; height: 700px; background-color: #fff; padding: 50px; box-sizing:
+      border-box; border: 20px solid #1a3c5a; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.2); background-image:
+      url('https://www.transparenttextures.com/patterns/pinstripe.png'); }
+            .inner-border { border: 2px solid #c5a059; height: 100%; width: 100%; padding: 40px; box-sizing: border-box;
+      text-align: center; }
+            .logo { max-width: 250px; margin-bottom: 30px; }
+            h1 { font-family: 'Playfair Display', serif; font-size: 56px; color: #1a3c5a; margin: 0; text-transform:
+      uppercase; letter-spacing: 5px; }
+            .award-text { font-size: 20px; color: #666; margin-top: 10px; }
+            .recipient-name { font-family: 'Dancing Script', cursive; font-size: 65px; color: #c5a059; margin: 30px 0;
+      border-bottom: 2px solid #eee; display: inline-block; min-width: 600px; }
+            .course-name { font-size: 28px; font-weight: 700; color: #333; margin: 20px 0; }
+            .details { font-size: 16px; color: #777; max-width: 700px; margin: 20px auto; line-height: 1.6; }
+            .footer { margin-top: 60px; display: flex; justify-content: space-around; align-items: flex-end; }
+            .signature-box { width: 250px; border-top: 1px solid #aaa; padding-top: 10px; font-size: 14px; color: #555; }
+            .date { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); font-size: 14px; color:
+      #999; }
+            .btn-print { background-color: #1a3c5a; color: white; padding: 12px 30px; border: none; border-radius: 5px;
+      cursor: pointer; font-weight: bold; margin-top: 20px; }
+        </style>
+    </head>
+    <body>
+        <div class="certificate-container">
+            <div class="inner-border">
+                <img src="https://www.atankalama.com/public/uploads/logoHotelAtankalama.png" alt="Logo" class="logo">
+                <div class="award-text">OTORGA EL PRESENTE</div>
+                <h1>Certificado</h1>
+                <div class="award-text">DE APROBACIÓN A:</div>
+                <div class="recipient-name">Juan Pérez (Ejemplo)</div>
+                <div class="details">Por haber completado satisfactoriamente los requisitos académicos y evaluaciones del
+      curso:</div>
+                <div class="course-name">"MANIPULACIÓN DE ALIMENTOS Y SEGURIDAD"</div>
+                <div class="details">Obteniendo el reconocimiento por su dedicación y cumplimiento de los estándares de
+      excelencia de nuestra institución.</div>
+                <div class="footer">
+                    <div class="signature-box"><strong>Dirección General</strong><br>Hotel Atankalama</div>
+                    <div class="signature-box"><strong>Departamento de RRHH</strong><br>Gestión de Capacitación</div>
+                </div>
+                <div class="date">Expedido el 28 de mayo de 2026</div>
+            </div>
+        </div>
+        <button class="btn-print" onclick="window.print()">PROBAR IMPRESIÓN</button>
+    </body>
+    </html>

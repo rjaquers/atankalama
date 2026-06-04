@@ -1,0 +1,9 @@
+{
+    "name": "hotel-atankalama/chatcalama",
+    "description": "ChatCalama internal hotel system",
+    "type": "project",
+    "minimum-stability": "stable",
+    "require": {
+        "anthropic-ai/sdk": "^0.9.0"
+    }
+}

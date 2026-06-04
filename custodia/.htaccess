@@ -1,0 +1,11 @@
+RewriteEngine On
+RewriteBase /custodia/
+
+# Redirige /custodia/index.php -> /custodia/
+RewriteCond %{THE_REQUEST} \s/+(custodia/index\.php)\s [NC]
+RewriteRule ^index\.php$ /custodia/ [R=301,L]
+
+# Enviar todo a index.php excepto archivos/carpetas reales
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]

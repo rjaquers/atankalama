@@ -1,0 +1,14 @@
+{
+  "config": {
+    "platform": {
+      "php": "7.4.33"
+    }
+  },
+
+
+
+  "require": {
+    "mike42/escpos-php": "^4.0",
+    "phpoffice/phpspreadsheet": "^1.29"
+  }
+}

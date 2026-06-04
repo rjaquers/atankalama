@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="1b5db79b-e72c-4e36-9e48-0fc3b224af77" name="rkm" url="https://www.rkm.cl">
+        <fileTransfer rootFolder="/public_html/" host="ftp.rkm.cl" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="4a45811e-54fb-405c-8ee2-aa0e1b5e2633" name="inventario" url="https://www.atankalama.com/">
+        <fileTransfer rootFolder="/public_html/inventario/" host="ftp.atankalama.com" port="21">
+          <advancedOptions>
+            <advancedOptions passiveMode="true" showHiddenFiles="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

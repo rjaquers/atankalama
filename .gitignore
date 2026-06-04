@@ -1,0 +1,23 @@
+# Exclude videos
+**/videos/
+*.mp4
+*.avi
+*.mov
+*.mkv
+
+# Exclude sensitive configuration files
+**/.env
+**/config.php
+**/database.php
+
+# Common temporary and log files
+**/error_log
+**/logs/
+**/temp/
+**/cache/
+.DS_Store
+Thumbs.db
+
+# Dependencies (optional but recommended to exclude if they can be re-installed)
+**/vendor/
+**/node_modules/

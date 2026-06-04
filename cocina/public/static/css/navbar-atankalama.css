@@ -1,0 +1,84 @@
+/*
+  ===================================================
+  = Proyecto: Hotel Atankalama - Sistema Web        =
+  = Sección: Navbar principal                       =
+  = Autor: Rodrigo Jaque Escobar                    =
+  = Fecha: <?= date('Y') ?>                         =
+  ===================================================
+*/
+
+/* === Ajustes generales del navbar === */
+.navbar {
+    background-color: #0d6efd !important; /* color institucional */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Espaciado interno uniforme */
+.navbar .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Logo */
+.navbar-brand img {
+    max-height: 50px;
+    transition: transform 0.2s ease;
+}
+.navbar-brand img:hover {
+    transform: scale(1.05);
+}
+
+/* === Enlaces de navegación === */
+.navbar-nav .nav-link {
+    color: #ffffff !important;
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Hover */
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Enlace activo */
+.navbar-nav .nav-link.active {
+    background-color: #ffffff;
+    color: #0d6efd !important;
+    font-weight: 600;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* === Botón hamburguesa === */
+.navbar-toggler {
+    border: none;
+    outline: none;
+    transition: transform 0.2s ease;
+}
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+.navbar-toggler:hover {
+    transform: rotate(5deg);
+}
+
+/* Icono hamburguesa blanco */
+.navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* === Ajustes para pantallas pequeñas === */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background-color: #0d6efd;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 10px 0;
+    }
+    .navbar-nav .nav-link {
+        text-align: center;
+        padding: 10px;
+    }
+}

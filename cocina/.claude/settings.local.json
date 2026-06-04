@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -r 'require '\\\\''vendor/composer/installed.php'\\\\''; $arr = require '\\\\''vendor/composer/installed.php'\\\\''; foreach\\($arr['\\\\''versions'\\\\''] as $pkg => $info\\) { echo $pkg . PHP_EOL; }')",
+      "Bash(ls *)",
+      "Bash(find vendor/phpmailer/phpmailer/language/ -name \"*.php\" ! -name \"phpmailer.lang-es.php\" -delete)",
+      "Bash(find vendor/markbaker/complex/examples/ -name \"*.php\" -delete)",
+      "Bash(find vendor/markbaker/matrix/examples/ -name \"*.php\" -delete)",
+      "Read(//Users/rjaquers/**)",
+      "Read(//Users/rjaquers/dev/**)",
+      "Bash(mysql -u rodrigo -pchinito cat6852_hotel_tickets -e \"DESCRIBE doc_companies;\")",
+      "Bash(mysql -u rodrigo -pchinito -e \"DESCRIBE cat6852_hotel_tickets.doc_companies;\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('REQUIRE:', list\\(d.get\\('require',{}\\).keys\\(\\)\\)\\)\")",
+      "Bash(composer dump-autoload *)",
+      "Bash(xargs cat *)",
+      "Read(//Volumes/disco_secundario/htdocs/**)",
+      "Read(//Volumes/Mac_Secundario/**)",
+      "Bash(python3 *)"
+    ]
+  }
+}

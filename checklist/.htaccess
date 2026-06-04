@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /checklist/
+
+    # Redirigir /checklist/public/xxx → /checklist/xxx (URL canónica)
+    RewriteCond %{REQUEST_URI} ^/checklist/public/(.*)$
+    RewriteRule ^ /checklist/%1 [R=301,L,QSA]
+
+    # Reenviar al directorio public/ (transparente, sin cambiar REQUEST_URI)
+    RewriteCond %{REQUEST_URI} !^/checklist/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

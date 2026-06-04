@@ -1,0 +1,4 @@
+/* Starter Kit RKM v6 */
+body { background: #f7f7f7; }
+.card { border-radius: 14px; }
+#qr-reader video { width: 100% !important; }

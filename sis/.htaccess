@@ -1,0 +1,6 @@
+
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^sis\.atankalama\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.sis\.atankalama\.com$
+RewriteRule ^/?$ "https\:\/\/www\.atankalama\.com\/incidencias\/" [R=301,L]
+

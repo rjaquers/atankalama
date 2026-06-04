@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php *)",
+      "Bash(echo \"Servidor PID: $!\")",
+      "Bash(curl -s http://localhost:8099/index.php?page=chatbot)"
+    ]
+  }
+}

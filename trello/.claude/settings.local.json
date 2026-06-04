@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs -I {} basename {})",
+      "Bash(area)",
+      "Bash(grep -n \"chk_usuarios\\\\|CREATE TABLE chk\\\\|perfil\\\\|area\\\\|`area`\" /Users/rjaquers/dev/Atankalama/trello/sql/cat6852_hotel_tickets.sql)",
+      "Bash(grep *)",
+      "Bash(python3 *)",
+      "Bash(xargs php -l)",
+      "Bash(lftp *)",
+      "WebFetch(domain:www.atankalama.com)",
+      "Bash(xargs ls -la)",
+      "Bash(php -l /Users/rjaquers/dev/Atankalama/trello/app/controllers/MisTareasController.php)",
+      "Bash(php -l /Users/rjaquers/dev/Atankalama/trello/app/views/mistareas/index.php)",
+      "Bash(php -l /Users/rjaquers/dev/Atankalama/trello/app/models/TarjetaModel.php)",
+      "Bash(php -l /Users/rjaquers/dev/Atankalama/trello/app/controllers/RecordatorioController.php)",
+      "Bash(php -l /Users/rjaquers/dev/Atankalama/trello/app/controllers/MiembroController.php)",
+      "Bash(php -l /Users/rjaquers/dev/Atankalama/trello/app/models/TarjetaMiembroModel.php)",
+      "Bash(php -l /Users/rjaquers/dev/Atankalama/trello/app/views/emails/kanban_notif.php)",
+      "Bash(php -l /Users/rjaquers/dev/Atankalama/trello/public/index.php)",
+      "Bash(php *)",
+      "Bash(mysql *)",
+      "Read(//Volumes/disco_secundario/htdocs/**)"
+    ]
+  }
+}

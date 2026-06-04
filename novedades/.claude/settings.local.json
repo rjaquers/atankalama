@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -A 20 \"INSERT INTO \\\\`chat_areas\\\\`\" /Volumes/disco_secundario/htdocs/novedades/sql/cat6852_hotel_tickets.sql)",
+      "Bash(grep -A 10 \"INSERT INTO \\\\`chk_areas\\\\`\\\\|INSERT INTO \\\\`chk_usuarios\\\\`\\\\|INSERT INTO \\\\`nov_recepcionistas\\\\`\" /Volumes/disco_secundario/htdocs/novedades/sql/cat6852_hotel_tickets.sql)",
+      "Read(//Users/rjaquers/.claude/**)",
+      "Bash(mysql -u cat6852_admin '-p$Xochitl2025$' cat6852_hotel_tickets -e ':*)",
+      "Bash(mysql:*)",
+      "Bash(grep -A5 \"INSERT INTO \\\\`chk_apps\\\\`\" /Volumes/disco_secundario/htdocs/novedades/sql/cat6852_hotel_tickets.sql)",
+      "Bash(grep -A5 \"INSERT INTO \\\\`chk_usuarios\\\\`\" /Volumes/disco_secundario/htdocs/novedades/sql/cat6852_hotel_tickets.sql)",
+      "Read(//Applications/MAMP/Library/bin/**)",
+      "Read(//Applications/MAMP/bin/php/**)",
+      "Bash(/Applications/MAMP/Library/bin/mysql:*)",
+      "Bash(php:*)",
+      "Bash(grep:*)",
+      "Bash(/usr/local/mysql/bin/mysql --version)",
+      "Bash(/opt/homebrew/bin/mysql --version)",
+      "Bash(composer require:*)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/shared/AccesoBootstrap.php /Users/rjaquers/Sites/shared/AccesoBootstrap.php)",
+      "Bash(echo \"Sites: $?\" cp /Users/rjaquers/dev/Atankalama/shared/AccesoBootstrap.php /Library/WebServer/Documents/shared/AccesoBootstrap.php)",
+      "Bash(echo \"LibWeb: $?\")",
+      "Bash(xargs cat *)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/config/Database.php /Users/rjaquers/dev/Atankalama/admin/config/Database.php)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/controllers/AccesoAppController.php /Users/rjaquers/dev/Atankalama/admin/controllers/)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/controllers/AccesoRolController.php /Users/rjaquers/dev/Atankalama/admin/controllers/)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/controllers/AccesoSeccionController.php /Users/rjaquers/dev/Atankalama/admin/controllers/)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/controllers/AccesoUsuarioController.php /Users/rjaquers/dev/Atankalama/admin/controllers/)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/views/acceso_apps_list.php /Users/rjaquers/dev/Atankalama/admin/views/)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/views/acceso_apps_form.php /Users/rjaquers/dev/Atankalama/admin/views/)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/views/acceso_apps_edit.php /Users/rjaquers/dev/Atankalama/admin/views/)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/views/acceso_roles_list.php /Users/rjaquers/dev/Atankalama/admin/views/)",
+      "Bash(cp /Users/rjaquers/dev/Atankalama/novedades/views/acceso_roles_form.php /Users/rjaquers/dev/Atankalama/admin/views/)",
+      "Bash(xargs ls *)",
+      "Bash(python3 *)",
+      "Bash(sed -i '' -e 's|views/acceso_apps_list\\\\.php|views/acceso/apps_list.php|g' -e 's|views/acceso_apps_form\\\\.php|views/acceso/apps_form.php|g' -e 's|views/acceso_apps_edit\\\\.php|views/acceso/apps_edit.php|g' /Users/rjaquers/dev/Atankalama/novedades/controllers/AccesoAppController.php)",
+      "Bash(sed -i '' -e 's|views/acceso_roles_list\\\\.php|views/acceso/roles_list.php|g' -e 's|views/acceso_roles_form\\\\.php|views/acceso/roles_form.php|g' -e 's|views/acceso_roles_edit\\\\.php|views/acceso/roles_edit.php|g' -e 's|views/acceso_roles_secciones\\\\.php|views/acceso/roles_secciones.php|g' /Users/rjaquers/dev/Atankalama/novedades/controllers/AccesoRolController.php)",
+      "Bash(sed -i '' -e 's|views/acceso_secciones_list\\\\.php|views/acceso/secciones_list.php|g' -e 's|views/acceso_secciones_form\\\\.php|views/acceso/secciones_form.php|g' -e 's|views/acceso_secciones_edit\\\\.php|views/acceso/secciones_edit.php|g' /Users/rjaquers/dev/Atankalama/novedades/controllers/AccesoSeccionController.php)",
+      "Bash(sed -i '' -e 's|views/acceso_log_archivo\\\\.php|views/acceso/log_archivo.php|g' -e 's|views/acceso_usuarios_list\\\\.php|views/acceso/usuarios_list.php|g' -e 's|views/acceso_usuarios_log\\\\.php|views/acceso/usuarios_log.php|g' -e 's|views/acceso_usuarios_form\\\\.php|views/acceso/usuarios_form.php|g' -e 's|views/acceso_usuarios_edit\\\\.php|views/acceso/usuarios_edit.php|g' -e 's|views/acceso_usuarios_permisos\\\\.php|views/acceso/usuarios_permisos.php|g' /Users/rjaquers/dev/Atankalama/novedades/controllers/AccesoUsuarioController.php)",
+      "Bash(sed -i '' -e 's|views/auth_otp_email\\\\.php|views/auth/otp_email.php|g' -e 's|views/auth_otp_code\\\\.php|views/auth/otp_code.php|g' /Users/rjaquers/dev/Atankalama/novedades/controllers/AuthController.php)"
+    ]
+  }
+}

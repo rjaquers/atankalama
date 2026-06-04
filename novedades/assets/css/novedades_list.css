@@ -1,0 +1,358 @@
+:root {
+    --white: #ffffff;
+    --black: #000000;
+    --blue: #0288d1;
+    --gray: #ebebeb;
+    --box-shadow1: 0px 0px 18px 2px rgba(10, 55, 90, 0.15);
+}
+
+/* ---------- TIMELINE DESKTOP ---------- */
+.timeline {
+    padding: 50px 0;
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    border-left: 2px dashed var(--blue);
+    height: 100%;
+    z-index: 1;
+    transform: translateX(-50%);
+}
+
+/* Nodos */
+.timeline-nodes {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+/* Alternancia izquierda / derecha */
+.timeline-nodes:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.timeline-nodes:nth-child(even) .timeline-date {
+    text-align: right;
+}
+
+/* Contenido */
+.timeline-content {
+    border: 1px solid var(--blue);
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0px 3px 25px 0px rgba(10, 55, 90, 0.2);
+    position: relative;
+    width: 45%;
+    background-color: var(--white);
+}
+
+.timeline-nodes:nth-child(odd) .timeline-content::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 100%;
+    border-left: 10px solid var(--blue);
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+.timeline-nodes:nth-child(even) .timeline-content::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: 100%;
+    border-right: 10px solid var(--blue);
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+}
+
+/* Ícono circular */
+.timeline-image {
+    position: relative;
+    z-index: 1;
+    /* siempre sobre el círculo */
+}
+
+.timeline-image::before {
+    content: '';
+    width: 80px;
+    height: 80px;
+    border: 2px dashed var(--blue);
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    z-index: 1;
+}
+
+/* Texto general */
+.timeline h3,
+.timeline p,
+.timeline time {
+    color: var(--blue);
+    padding: 5px 15px;
+}
+
+.small {
+    font-size: 0.8rem;
+}
+
+mark {
+    background-color: #ffeb3b;
+    padding: 0 2px;
+    border-radius: 3px;
+}
+
+header {
+    padding: 1rem 0;
+    color: black;
+}
+
+
+/* ---------- VISTA MÓVIL ---------- */
+@media (max-width: 767px) {
+    .timeline::before {
+        left: 4%;
+        transform: translateX(-50%);
+    }
+
+    .timeline-nodes {
+        flex-direction: column !important;
+        align-items: flex-start;
+    }
+
+    .timeline-content {
+        width: 100%;
+    }
+
+    /* las flechas apuntan todas a la izquierda */
+    .timeline-nodes:nth-child(even) .timeline-content::after,
+    .timeline-nodes:nth-child(odd) .timeline-content::after {
+        right: 100%;
+        left: auto;
+        border-left: none;
+        border-right: 10px solid var(--blue);
+    }
+
+    .timeline-image::before {
+        width: 55px;
+        height: 55px;
+    }
+
+    .timeline-image i {
+        font-size: 1.2rem;
+        /* ícono más pequeño */
+    }
+}
+
+/* ---------- EXTRA SMALL (CELULARES PEQUEÑOS) ---------- */
+@media (max-width: 575px) {
+    .timeline::before {
+        left: 3%;
+    }
+
+    .timeline-image i {
+        position: relative;
+        z-index: 2;
+        /* siempre sobre el círculo */
+    }
+
+    .timeline-image::before {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.novedad-chip {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 500;
+}
+
+
+.novedad-card.recepcion {
+    border-left: 4px solid #0d6efd;
+}
+
+.novedad-card.cocina {
+    border-left: 4px solid #f59e0b;
+}
+
+.novedad-card.aseo {
+    border-left: 4px solid #10b981;
+}
+
+
+/*    Para correo*/
+
+.novedad-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-icon.email {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: #0d6efd;
+    background: rgba(13, 110, 253, 0.08);
+    transition: all .25s ease;
+}
+
+.action-icon.email i {
+    font-size: 20px;
+    transition: transform .25s ease;
+}
+
+.action-icon.email:hover {
+    background: rgba(13, 110, 253, 0.18);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+}
+
+.action-icon.email:hover i {
+    transform: scale(1.15);
+}
+
+.action-icon.email::after {
+    content: '↗';
+    font-size: 12px;
+    margin-left: 4px;
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+.action-icon.email:hover::after {
+    opacity: 1;
+}
+
+mark {
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.mark-habitacion {
+    background: #78bdec;
+    color: #0369a1;
+}
+
+.mark-nombre {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.mark-keyword {
+    background: #f6b008;
+    color: #92400e;
+}
+
+.action-icon.flexkeeping {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.02);
+    transition: all .25s ease;
+}
+
+.action-icon.flexkeeping img {
+    transition: transform .25s ease, filter .25s ease;
+    filter: grayscale(30%);
+}
+
+.action-icon.flexkeeping:hover {
+    background: rgba(0, 153, 204, 0.08);
+    /* azul Flexkeeping */
+    box-shadow: 0 0 0 3px rgba(0, 153, 204, .15);
+}
+
+.action-icon.flexkeeping:hover img {
+    transform: scale(1.12);
+    filter: none;
+}
+
+.action-icon.flexkeeping::after {
+    content: '↗';
+    font-size: 12px;
+    margin-left: 4px;
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+
+.action-icon.flexkeeping:hover::after {
+    opacity: 1;
+}
+
+/*//Logo WhatsApp*/
+.action-icon.whatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    color: #25D366;
+    background: rgba(37, 211, 102, 0.08);
+    transition: all .25s ease;
+}
+
+.action-icon.whatsapp i {
+    font-size: 20px;
+    transition: transform .25s ease;
+}
+
+.action-icon.whatsapp:hover {
+    background: rgba(37, 211, 102, 0.18);
+    box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.25);
+}
+
+.action-icon.whatsapp:hover i {
+    transform: scale(1.15);
+}
+
+.novedad-detalle {
+    text-transform: none;
+    line-height: 1.6;
+    color: #1f2937;
+    font-size: 14px;
+}
+
+.importancia-chip {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    min-width: 36px;
+    padding: 4px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 20px;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
+}
+
+.imp-baja {
+    background-color: #2e7d32;
+}
+
+.imp-media {
+    background-color: #ef6c00;
+}
+
+.imp-alta {
+    background-color: #c62828;
+}

@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirigir todo el tráfico a la carpeta public
+    RewriteRule ^$ public/index.php [L]
+    RewriteRule ^((?!public/).*)$ public/$1 [L]
+</IfModule>
+
+# Impedir que se listen las carpetas
+Options -Indexes

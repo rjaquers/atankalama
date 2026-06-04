@@ -1,0 +1,9 @@
+RewriteEngine On
+
+# RewriteBase se auto-detecta desde SCRIPT_NAME en config.php,
+# pero Apache necesita saber el subdirectorio para las rutas limpias.
+RewriteBase /chatcalama/public/
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]

@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Volumes/disco_secundario/htdocs/**)",
+      "Read(//Users/rjaquers/dev/Atankalama/**)",
+      "Bash(grep -r 'email\\\\\\(\\\\\\)\\\\|admin_email\\\\|session_email\\\\|$email' /Users/rjaquers/dev/Atankalama/university/app/core/ /Users/rjaquers/dev/Atankalama/university/app/controllers/)",
+      "Bash(curl -s --ftp-ssl ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/)",
+      "Bash(curl -s ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/)",
+      "Bash(curl -s ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/public_html/university/)",
+      "Bash(curl -s -T /Users/rjaquers/dev/Atankalama/university/public/index.php ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/public_html/university/public/index.php)",
+      "Bash(curl -s -T /Users/rjaquers/dev/Atankalama/university/app/views/layouts/header.php ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/public_html/university/app/views/layouts/header.php)",
+      "Bash(curl -s ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/public_html/university/public/)",
+      "Bash(curl -s ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/public_html/university/app/views/layouts/)",
+      "Bash(curl -s -T /Users/rjaquers/dev/Atankalama/university/app/middleware/AuthMiddleware.php ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/public_html/university/app/middleware/AuthMiddleware.php)",
+      "Bash(curl -s ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/public_html/university/.htaccess)",
+      "Bash(curl -s ftp://cat6852:nWSxFWTpSLUQVQtvyYfv@ftp.atankalama.com/public_html/university/public/.htaccess)",
+      "Bash(curl -si https://www.atankalama.com/university/)",
+      "Bash(curl -sL https://www.atankalama.com/university/)",
+      "Bash(curl *)",
+      "Bash(xargs ls -la)",
+      "Bash(grep *)"
+    ]
+  }
+}

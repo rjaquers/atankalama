@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php /Users/rjaquers/dev/checklist/scripts/migrate_foto.php)",
+      "WebFetch(domain:www.atankalama.com)",
+      "Bash(grep *)"
+    ]
+  }
+}

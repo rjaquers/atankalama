@@ -1,0 +1,13 @@
+# Activar mod_rewrite
+RewriteEngine On
+
+# Si pide un archivo o directorio existente, se sirve normal
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Si piden /views/index.php, redirigir a public/index.php
+RewriteRule ^views/index\.php$ public/index.php [QSA,L]
+
+# Todo lo demás va al index.php dentro de public
+RewriteRule ^(.*)$ public/index.php [QSA,L]
