@@ -13,8 +13,10 @@
 # Common temporary and log files
 **/error_log
 **/logs/
-**/temp/
 **/cache/
+
+# Archivos de credenciales (nunca versionar)
+**/___conec*.php
 .DS_Store
 Thumbs.db
 
