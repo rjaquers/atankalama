@@ -1,3 +1,4 @@
+<?php $mostrarDesayuno = isset($_GET['ver_desayuno']); ?>
 <!DOCTYPE html>
 <html lang='es'>
 <head>
@@ -10,26 +11,37 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom"
             style="border-color: var(--color-border) !important;">
-            <h2 class="mb-0 fw-bold">
+            <h4 class="mb-0 fw-bold">
                 <i class="bi bi-journal-text me-2" style="color:var(--color-cta)"></i>Listado de Comandas
-            </h2>
+            </h4>
             <div class="d-flex gap-2">
                 <a href="index.php?page=comanda/imprimir&fecha=<?= urlencode($fecha) ?>" target="_blank"
-                   class="btn btn-outline-secondary px-3" style="width:auto;" title="Ver versión para imprimir">
+                   class="btn btn-sm btn-outline-secondary" style="width:auto;" title="Ver versión para imprimir">
                     <i class="bi bi-printer me-1"></i>Imprimir
                 </a>
-                <a href="index.php?page=comanda/cena&tipo=almuerzo" class="btn btn-pro-action px-3" style="width:auto;">
+                <a href="index.php?page=comanda/cena&tipo=almuerzo" class="btn btn-sm btn-pro-action" style="width:auto;">
                     <i class="bi bi-sun-fill me-1"></i>+ Almuerzo
                 </a>
-                <a href="index.php?page=comanda/cena" class="btn btn-pro-action px-3" style="width:auto;">
+                <a href="index.php?page=comanda/cena" class="btn btn-sm btn-pro-action" style="width:auto;">
                     <i class="bi bi-moon-stars-fill me-1"></i>+ Cena / Colación
                 </a>
-                <a href="index.php?page=comanda/especial" class="btn btn-pro-action px-3" style="width:auto;">
+                <a href="index.php?page=comanda/especial" class="btn btn-sm btn-pro-action" style="width:auto;">
                     <i class="bi bi-star-fill me-1"></i>+ Especial
                 </a>
-                <a href="index.php?page=comanda/desayuno" class="btn btn-pro-action px-3" style="width:auto;">
+                <a href="index.php?page=comanda/desayuno" class="btn btn-sm btn-pro-action" style="width:auto;">
                     <i class="bi bi-sun-fill me-1"></i>+ Desayuno
                 </a>
+                <?php if (!$mostrarDesayuno): ?>
+                <a href="index.php?page=comanda/listado&fecha=<?= urlencode($fecha) ?>&ver_desayuno=1"
+                   class="btn btn-sm btn-outline-info" style="width:auto;">
+                    <i class="bi bi-eye me-1"></i>Ver Desayunos (comanda)
+                </a>
+                <?php else: ?>
+                <a href="index.php?page=comanda/listado&fecha=<?= urlencode($fecha) ?>"
+                   class="btn btn-sm btn-outline-secondary" style="width:auto;">
+                    <i class="bi bi-eye-slash me-1"></i>Ocultar Desayunos
+                </a>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -60,12 +72,14 @@
 
         <?php
         $tipos = [
-            'almuerzo'          => ['label' => 'Almuerzos',                'icon' => 'bi-sun-fill',         'color' => 'warning'],
-            'cena'              => ['label' => 'Cenas',                    'icon' => 'bi-moon-stars-fill',  'color' => 'primary'],
-            'colacion'          => ['label' => 'Colaciones',               'icon' => 'bi-cup-hot-fill',     'color' => 'success'],
-            'colacion_especial' => ['label' => 'Colaciones Especiales',    'icon' => 'bi-star-fill',        'color' => 'dark'],
-            'desayuno'          => ['label' => 'Desayunos',                'icon' => 'bi-sun-fill',         'color' => 'info'],
+            'almuerzo'          => ['label' => 'Almuerzos',             'icon' => 'bi-sun-fill',        'color' => 'warning', 'bg' => '#fff8e1', 'border' => '#f59e0b', 'text' => '#92400e'],
+            'cena'              => ['label' => 'Cenas',                 'icon' => 'bi-moon-stars-fill', 'color' => 'primary', 'bg' => '#eff6ff', 'border' => '#3b82f6', 'text' => '#1e40af'],
+            'colacion'          => ['label' => 'Colaciones',            'icon' => 'bi-cup-hot-fill',    'color' => 'success', 'bg' => '#f0fdf4', 'border' => '#22c55e', 'text' => '#166534'],
+            'colacion_especial' => ['label' => 'Colaciones Especiales', 'icon' => 'bi-star-fill',       'color' => 'dark',    'bg' => '#f5f3ff', 'border' => '#7c3aed', 'text' => '#5b21b6'],
         ];
+        if ($mostrarDesayuno) {
+            $tipos['desayuno'] = ['label' => 'Desayunos', 'icon' => 'bi-sun-fill', 'color' => 'info', 'bg' => '#f0f9ff', 'border' => '#06b6d4', 'text' => '#155e75'];
+        }
 
         $porTipo = [];
         foreach ($comandas as $c) {
@@ -84,11 +98,11 @@
             <?php if (empty($porTipo[$tipo])): continue; endif; ?>
             
             <div class="mb-5">
-                <div class="d-flex align-items-center mb-3 pb-2 border-bottom" style="border-color: var(--color-border) !important;">
-                    <h4 class="fw-bold mb-0" style="color:var(--color-primary);">
-                        <i class="bi <?= $meta['icon'] ?> me-2 text-<?= $meta['color'] ?>"></i>
-                        <?= $meta['label'] ?> — <?= date('d/m/Y', strtotime($fecha)) ?>
-                    </h4>
+                <div class="text-center py-2 mb-3 rounded-3"
+                     style="background:<?= $meta['bg'] ?>; border: 1px solid <?= $meta['border'] ?>40; border-left: 4px solid <?= $meta['border'] ?>;">
+                    <h5 class="fw-bold mb-0" style="color:<?= $meta['text'] ?>;">
+                        <i class="bi <?= $meta['icon'] ?> me-2"></i><?= $meta['label'] ?> — <?= date('d/m/Y', strtotime($fecha)) ?>
+                    </h5>
                 </div>
 
                 <div class="row g-4">
@@ -113,7 +127,7 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-hover mb-0 align-middle table-pro-comandas">
+                                    <table class="table table-hover table-sm mb-0 align-middle table-pro-comandas">
                                         <thead class="table-light">
                                             <tr>
                                                 <th class="px-4">Empresa / Solicitante</th>
@@ -137,7 +151,7 @@
                                                         <span class="text-muted"><i class="bi bi-person me-1"></i><?= htmlspecialchars($c['nombre_contacto'] ?: 'Particular') ?></span>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td class="text-center fw-bold fs-5"><?= $c['cantidad_personas'] ?></td>
+                                                <td class="text-center fw-bold"><?= $c['cantidad_personas'] ?></td>
                                                 <td class="text-center">
                                                     <?= $c['hora_servicio'] ? substr($c['hora_servicio'], 0, 5) . ' hrs' : '<span class="text-muted">—</span>' ?>
                                                 </td>
@@ -213,6 +227,91 @@
             </div>
         <?php endforeach; ?>
 
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- SECCIÓN: Desayunos Masivos                            -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <?php
+    $hayMasivoAtan = !empty($masivoAtan ?? []);
+    $hayMasivoInn  = !empty($masivoInn  ?? []);
+    $hayMasivo     = $hayMasivoAtan || $hayMasivoInn;
+    ?>
+    <div class="mb-5">
+        <div class="text-center py-2 mb-3 rounded-3"
+             style="background:#fefce8; border:1px solid #ca8a0440; border-left:4px solid #ca8a04;">
+            <h5 class="fw-bold mb-0" style="color:#713f12;">
+                <i class="bi bi-table me-2"></i>Desayunos Masivos — <?= date('d/m/Y', strtotime($fecha)) ?>
+                <a href="index.php?page=desayuno/tablero&fecha=<?= urlencode($fecha) ?>"
+                   class="btn btn-sm btn-outline-warning ms-3" style="font-size:.75rem; font-weight:600;">
+                    <i class="bi bi-pencil me-1"></i>Editar tablero
+                </a>
+            </h5>
+        </div>
+
+        <?php if (!$hayMasivo): ?>
+            <div class="alert alert-light text-center text-muted border">
+                <i class="bi bi-inbox me-2"></i>Sin desayunos masivos registrados para
+                <strong><?= date('d/m/Y', strtotime($fecha)) ?></strong>.
+            </div>
+        <?php else: ?>
+            <div class="row g-4">
+            <?php foreach ([
+                ['Atankalama',     $masivoAtan ?? [], $totalMasivoAtan ?? 0, 'primary', 'bi-building',      'var(--color-cta)'],
+                ['Atankalama Inn', $masivoInn  ?? [], $totalMasivoInn  ?? 0, 'info',    'bi-building-fill', '#06b6d4'],
+            ] as [$hNombre, $hFilas, $hTotal, $hColor, $hIcon, $hBorder]): ?>
+            <div class="col-xl-6">
+                <div class="pro-card border-0 shadow-sm h-100">
+                    <div class="card-header bg-transparent py-3 px-4 d-flex justify-content-between align-items-center"
+                         style="border-bottom:1px solid var(--color-border); border-top:4px solid <?= $hBorder ?> !important;">
+                        <h5 class="fw-bold mb-0" style="color:var(--color-primary);">
+                            <i class="bi <?= $hIcon ?> me-2 text-<?= $hColor ?>"></i>
+                            <?= strtoupper($hNombre) ?>
+                        </h5>
+                        <span class="badge bg-<?= $hColor ?> rounded-pill px-3 py-2"><?= $hTotal ?> PAX</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <?php if (empty($hFilas)): ?>
+                            <p class="text-muted small text-center py-4 mb-0">
+                                <i class="bi bi-inbox me-1"></i>Sin registros.
+                            </p>
+                        <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm mb-0 align-middle" style="font-size:.85rem;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="px-4">Empresa</th>
+                                        <th class="text-muted" style="font-size:.75rem;">Proyecto</th>
+                                        <th class="text-center">PAX</th>
+                                        <th>Observación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($hFilas as $mf): ?>
+                                    <tr>
+                                        <td class="px-4 fw-semibold"><?= htmlspecialchars($mf['nombre_empresa']) ?></td>
+                                        <td class="text-muted small"><?= htmlspecialchars($mf['nombre_proyecto'] ?: '—') ?></td>
+                                        <td class="text-center fw-bold fs-6"><?= (int)$mf['cantidad'] ?></td>
+                                        <td class="small text-muted"><?= htmlspecialchars($mf['observaciones'] ?: '—') ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="table-light fw-bold">
+                                        <td colspan="2" class="px-4 text-muted small text-uppercase">Total</td>
+                                        <td class="text-center fs-6"><?= $hTotal ?></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- ══════════════════════════════════════════════════════ -->
@@ -310,8 +409,11 @@
         border-bottom: 2px solid var(--color-border);
         font-weight: 600;
         text-transform: uppercase;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         letter-spacing: 0.025em;
+    }
+    .table-pro-comandas td {
+        font-size: 0.82rem;
     }
     </style>
 

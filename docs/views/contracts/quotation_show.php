@@ -95,8 +95,255 @@
     <a href="<?= BASE_URL ?>/quotations/generatePdf/<?= $quotation['id'] ?>" class="btn btn-atk">
       <i class="fa-solid fa-file-pdf"></i> Regenerar PDF
     </a>
+    <button type="button" class="btn btn-info text-white"
+            data-bs-toggle="modal" data-bs-target="#modalEnviarCotizacion">
+      <i class="fa-solid fa-paper-plane"></i> Enviar
+    </button>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MODAL: Enviar Cotización por correo                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="modalEnviarCotizacion" tabindex="-1" aria-labelledby="modalEnviarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="modalEnviarLabel">
+          <i class="fa-solid fa-paper-plane me-2"></i>
+          Enviar cotización — <?= htmlspecialchars($quotation['code']) ?>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST" action="<?= BASE_URL ?>/quotations/sendEmail/<?= $quotation['id'] ?>">
+        <input type="hidden" name="csrf" value="<?= csrf_token() ?>">
+        <div class="modal-body">
+
+          <!-- DESTINATARIOS -->
+          <div class="mb-4">
+            <label class="form-label fw-bold">
+              <i class="fa-solid fa-users me-1 text-info"></i> Destinatarios
+            </label>
+
+            <div id="listaDestinatarios" class="d-flex flex-column gap-2 p-3 bg-light rounded">
+
+              <?php /* Contacto principal de la empresa */ ?>
+              <?php if (!empty($quotation['contact_email'])): ?>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="recipients[]"
+                       id="dest_principal" value="<?= htmlspecialchars($quotation['contact_email']) ?>" checked>
+                <label class="form-check-label" for="dest_principal">
+                  <strong><?= htmlspecialchars($quotation['contact_name'] ?? 'Contacto principal') ?></strong>
+                  <span class="text-muted ms-1"><?= htmlspecialchars($quotation['contact_email']) ?></span>
+                  <span class="badge bg-secondary ms-1" style="font-size:.65rem;">principal</span>
+                </label>
+              </div>
+              <?php endif; ?>
+
+              <?php /* Contactos adicionales de la empresa */ ?>
+              <?php foreach ($contacts as $ct): ?>
+              <div class="form-check destinatario-item" data-id="<?= $ct['id'] ?>">
+                <input class="form-check-input" type="checkbox" name="recipients[]"
+                       id="dest_<?= $ct['id'] ?>" value="<?= htmlspecialchars($ct['email']) ?>" checked>
+                <label class="form-check-label" for="dest_<?= $ct['id'] ?>">
+                  <strong><?= htmlspecialchars($ct['name']) ?></strong>
+                  <span class="text-muted ms-1"><?= htmlspecialchars($ct['email']) ?></span>
+                  <?php if ($ct['role']): ?>
+                    <span class="badge bg-light text-dark border ms-1" style="font-size:.65rem;"><?= htmlspecialchars($ct['role']) ?></span>
+                  <?php endif; ?>
+                </label>
+              </div>
+              <?php endforeach; ?>
+
+              <?php /* Correo del vendedor/usuario actual */ ?>
+              <div class="form-check border-top pt-2 mt-1">
+                <input class="form-check-input" type="checkbox" name="recipients[]"
+                       id="dest_yo" value="<?= htmlspecialchars($_SESSION['user_email']) ?>">
+                <label class="form-check-label" for="dest_yo">
+                  <i class="fa-solid fa-user me-1 text-primary"></i>
+                  <strong>Mi correo</strong>
+                  <span class="text-muted ms-1"><?= htmlspecialchars($_SESSION['user_email']) ?></span>
+                </label>
+              </div>
+
+            </div><!-- /listaDestinatarios -->
+
+            <!-- Agregar nuevo contacto inline -->
+            <div class="mt-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      onclick="toggleFormContacto()">
+                <i class="fa-solid fa-user-plus me-1"></i> Agregar contacto de empresa
+              </button>
+
+              <div id="formNuevoContacto" class="card card-body mt-2 border-info" style="display:none;">
+                <p class="small text-muted mb-2">El contacto quedará guardado en la empresa.</p>
+                <div class="row g-2">
+                  <div class="col-md-5">
+                    <input type="text" id="nc_nombre" class="form-control form-control-sm"
+                           placeholder="Nombre completo *">
+                  </div>
+                  <div class="col-md-5">
+                    <input type="email" id="nc_email" class="form-control form-control-sm"
+                           placeholder="correo@empresa.com *">
+                  </div>
+                  <div class="col-md-2">
+                    <button type="button" class="btn btn-sm btn-info text-white w-100"
+                            onclick="guardarNuevoContacto()">
+                      <i class="fa-solid fa-check"></i>
+                    </button>
+                  </div>
+                  <div class="col-md-5">
+                    <input type="text" id="nc_cargo" class="form-control form-control-sm"
+                           placeholder="Cargo (opcional)">
+                  </div>
+                  <div class="col-md-5">
+                    <input type="text" id="nc_telefono" class="form-control form-control-sm"
+                           placeholder="Teléfono (opcional)">
+                  </div>
+                  <div class="col-12">
+                    <div id="nc_error" class="text-danger small" style="display:none;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /destinatarios -->
+
+          <!-- ASUNTO -->
+          <div class="mb-3">
+            <label class="form-label fw-bold" for="envioAsunto">Asunto</label>
+            <input type="text" name="subject" id="envioAsunto" class="form-control"
+                   value="Propuesta Comercial — <?= htmlspecialchars($quotation['business_name']) ?> — <?= htmlspecialchars($quotation['code']) ?>">
+          </div>
+
+          <!-- MENSAJE -->
+          <div class="mb-3">
+            <label class="form-label fw-bold" for="envioMensaje">Mensaje</label>
+            <textarea name="message" id="envioMensaje" class="form-control" rows="6"><?php
+$contactoNombre = $quotation['contact_name'] ?? 'equipo';
+$vendedor       = $_SESSION['user_name']    ?? 'el equipo de Atankalama';
+echo htmlspecialchars(
+    "Estimado/a {$contactoNombre},\n\n" .
+    "Adjuntamos la propuesta comercial correspondiente a {$quotation['business_name']}.\n\n" .
+    "Quedo a disposición para cualquier consulta o aclaración.\n\n" .
+    "Saludos cordiales,\n{$vendedor}"
+);
+            ?></textarea>
+          </div>
+
+          <!-- PDF adjunto -->
+          <div class="alert alert-light border d-flex align-items-center gap-2 py-2 mb-0">
+            <i class="fa-solid fa-paperclip text-danger"></i>
+            <span class="small">
+              PDF adjunto automáticamente:
+              <strong>Cotizacion_<?= htmlspecialchars($quotation['code']) ?>.pdf</strong>
+              <?php if (empty($quotation['generated_pdf_path'])): ?>
+                <span class="badge bg-warning text-dark ms-1">se generará al enviar</span>
+              <?php endif; ?>
+            </span>
+          </div>
+
+        </div><!-- /modal-body -->
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-info text-white px-4" id="btnEnviarCorreo">
+            <i class="fa-solid fa-paper-plane me-1"></i> Enviar correo
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const COMPANY_ID = <?= (int)$quotation['company_id'] ?>;
+const CSRF_TOKEN = '<?= csrf_token() ?>';
+
+function toggleFormContacto() {
+  const f = document.getElementById('formNuevoContacto');
+  f.style.display = f.style.display === 'none' ? '' : 'none';
+}
+
+function guardarNuevoContacto() {
+  const nombre   = document.getElementById('nc_nombre').value.trim();
+  const email    = document.getElementById('nc_email').value.trim();
+  const cargo    = document.getElementById('nc_cargo').value.trim();
+  const telefono = document.getElementById('nc_telefono').value.trim();
+  const errDiv   = document.getElementById('nc_error');
+  errDiv.style.display = 'none';
+
+  if (!nombre || !email) {
+    errDiv.textContent = 'Nombre y correo son obligatorios.';
+    errDiv.style.display = '';
+    return;
+  }
+
+  const btn = event.currentTarget;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+  const fd = new FormData();
+  fd.append('company_id', COMPANY_ID);
+  fd.append('name',  nombre);
+  fd.append('email', email);
+  fd.append('phone', telefono);
+  fd.append('role',  cargo);
+  fd.append('csrf', CSRF_TOKEN);
+
+  fetch('<?= BASE_URL ?>/?url=contacts/store', { method: 'POST', body: fd })
+    .then(r => r.json())
+    .then(res => {
+      if (!res.success) {
+        errDiv.textContent = res.message || 'Error al guardar.';
+        errDiv.style.display = '';
+        return;
+      }
+      // Agregar checkbox a la lista y marcarlo
+      const ct = res.contact;
+      const wrap = document.createElement('div');
+      wrap.className = 'form-check destinatario-item';
+      wrap.dataset.id = ct.id;
+      wrap.innerHTML = `
+        <input class="form-check-input" type="checkbox" name="recipients[]"
+               id="dest_new_${ct.id}" value="${ct.email}" checked>
+        <label class="form-check-label" for="dest_new_${ct.id}">
+          <strong>${ct.name}</strong>
+          <span class="text-muted ms-1">${ct.email}</span>
+          ${ct.role ? `<span class="badge bg-light text-dark border ms-1" style="font-size:.65rem;">${ct.role}</span>` : ''}
+          <span class="badge bg-success ms-1" style="font-size:.65rem;">nuevo</span>
+        </label>`;
+
+      // Insertar antes de "Mi correo"
+      const yo = document.getElementById('dest_yo').closest('.form-check');
+      document.getElementById('listaDestinatarios').insertBefore(wrap, yo);
+
+      // Limpiar y ocultar formulario
+      ['nc_nombre','nc_email','nc_cargo','nc_telefono'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('formNuevoContacto').style.display = 'none';
+    })
+    .catch(() => {
+      errDiv.textContent = 'Error de conexión.';
+      errDiv.style.display = '';
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    });
+}
+
+// Deshabilitar botón al enviar para evitar doble envío
+document.getElementById('btnEnviarCorreo')?.closest('form').addEventListener('submit', function() {
+  const btn = document.getElementById('btnEnviarCorreo');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Enviando...';
+});
+</script>
 
 <div class="row g-4">
   <!-- Columna Izquierda: Datos Generales -->

@@ -60,8 +60,55 @@ class MailService
     }
 
     /**
+     * Envía un correo con un archivo adjunto.
+     *
+     * @param string      $to
+     * @param string      $subject
+     * @param string      $body             HTML
+     * @param string      $attachmentPath   Ruta absoluta al archivo
+     * @param string|null $attachmentName   Nombre visible del adjunto
+     * @return bool
+     */
+    public function sendWithAttachment($to, $subject, $body, $attachmentPath, $attachmentName = null)
+    {
+        if (empty($to)) return false;
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host     = MAIL_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = MAIL_USERNAME;
+            $mail->Password = MAIL_PASSWORD;
+            if (defined('MAIL_ENCRYPTION') && !empty(MAIL_ENCRYPTION)) {
+                $mail->SMTPSecure = MAIL_ENCRYPTION;
+            }
+            $mail->Port    = (int) MAIL_PORT;
+            $mail->CharSet = 'UTF-8';
+
+            $mail->setFrom(MAIL_FROM_EMAIL, MAIL_FROM_NAME);
+            $mail->addAddress($to);
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = $body;
+            $mail->AltBody = strip_tags($body);
+
+            if (!empty($attachmentPath) && file_exists($attachmentPath)) {
+                $mail->addAttachment($attachmentPath, $attachmentName ?: basename($attachmentPath));
+            }
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            app_log("Error al enviar correo con adjunto a {$to}: " . $mail->ErrorInfo);
+            return false;
+        }
+    }
+
+    /**
      * Envía una notificación de prueba.
-     * 
+     *
      * @param string $to
      * @return bool
      */

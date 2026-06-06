@@ -6,6 +6,7 @@ require_once __DIR__ . '/../models/EmpresaModel.php';
 require_once __DIR__ . '/../models/ReservaModel.php';
 require_once __DIR__ . '/../models/CambioLogModel.php';
 require_once __DIR__ . '/../models/ImpresionLogModel.php';
+require_once __DIR__ . '/../config/db.php';
 
 class VoucherController
 {
@@ -447,6 +448,15 @@ class VoucherController
 
         $clientes  = $model->obtenerClientesPorComanda($comandaId);
         $genericos = $model->obtenerGenericosPorComanda($comandaId);
+
+        $projectName = null;
+        if (!empty($comanda['project_id'])) {
+            $stmt = TicketsDatabase::getInstance()->prepare(
+                'SELECT name FROM doc_projects WHERE id = ? LIMIT 1'
+            );
+            $stmt->execute([(int)$comanda['project_id']]);
+            $projectName = $stmt->fetchColumn() ?: null;
+        }
 
         require_once __DIR__ . '/../views/voucher/imprimir.php';
     }

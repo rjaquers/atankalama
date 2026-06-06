@@ -18,9 +18,9 @@ $body_style     = $fondo_imagen
   <link rel="manifest" href="<?= BASE_URL ?>/manifest.json">
   <meta name="theme-color" content="<?= $color_fondo ?>">
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <link href="<?= BASE_URL ?>/assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link href="<?= BASE_URL ?>/assets/vendor/bootstrap-icons/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/vendor/flatpickr/flatpickr.min.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
 </head>
 <body class="kanban-body" style="<?= $body_style ?>">

@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Redirigir todo el tráfico a la carpeta public de forma transparente
+    RewriteRule ^$ public/ [L]
+    RewriteRule (.*) public/$1 [L]
+</IfModule>
+
+# Seguridad: Bloquear acceso a carpetas sensibles
+Options -Indexes

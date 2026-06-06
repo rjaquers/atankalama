@@ -176,6 +176,53 @@ switch($route) {
         break;
 
     // -------------------------------------------------------
+    // Usuarios de Empresas (acceso portal empresas)
+    // -------------------------------------------------------
+    case 'emp/usuarios/list':
+        (new EmpUsuarioController())->list();
+        break;
+    case 'emp/usuarios/create':
+        (new EmpUsuarioController())->create();
+        break;
+    case 'emp/usuarios/store':
+        (new EmpUsuarioController())->store();
+        break;
+    case 'emp/usuarios/edit':
+        (new EmpUsuarioController())->edit();
+        break;
+    case 'emp/usuarios/update':
+        (new EmpUsuarioController())->update();
+        break;
+    case 'emp/usuarios/delete':
+        (new EmpUsuarioController())->delete();
+        break;
+    case 'emp/usuarios/reset-password':
+        (new EmpUsuarioController())->resetPassword();
+        break;
+
+    // -------------------------------------------------------
+    // Proyectos de Empresas
+    // -------------------------------------------------------
+    case 'doc_companies/proyectos':
+        (new DocProjectController())->list();
+        break;
+    case 'doc_companies/proyectos/create':
+        (new DocProjectController())->create();
+        break;
+    case 'doc_companies/proyectos/store':
+        (new DocProjectController())->store();
+        break;
+    case 'doc_companies/proyectos/edit':
+        (new DocProjectController())->edit();
+        break;
+    case 'doc_companies/proyectos/update':
+        (new DocProjectController())->update();
+        break;
+    case 'doc_companies/proyectos/delete':
+        (new DocProjectController())->delete();
+        break;
+
+    // -------------------------------------------------------
     // Empresas
     // -------------------------------------------------------
     case 'doc_companies/list':

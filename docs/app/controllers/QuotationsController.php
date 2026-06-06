@@ -129,12 +129,15 @@ class QuotationsController extends Controller
         $hotels = $hotelModel->getByContractId($id);
 
         $attachments = (new ContractAttachmentModel())->getByContractId($id);
-        
+
         // Cargar historial de acciones
         $historyModel = new ContractHistoryModel();
         $history = $historyModel->getByContractId($id);
 
-        $this->view('contracts/quotation_show', compact('quotation', 'services', 'hotels', 'attachments', 'history'));
+        // Contactos adicionales de la empresa
+        $contacts = (new ContactModel())->getByCompany((int) $quotation['company_id']);
+
+        $this->view('contracts/quotation_show', compact('quotation', 'services', 'hotels', 'attachments', 'history', 'contacts'));
     }
 
     /**
@@ -299,6 +302,86 @@ class QuotationsController extends Controller
             $_SESSION['flash_error'] = 'Error al aprobar cotización';
             $this->redirect('/quotations/show/' . $id);
         }
+    }
+
+    /**
+     * Envía la cotización por correo con el PDF adjunto.
+     * POST ?url=quotations/sendEmail/{id}
+     */
+    public function sendEmail($id)
+    {
+        PermissionMiddleware::check('contracts_edit');
+        csrf_verify();
+
+        $contractModel = new ContractModel();
+        $quotation     = $contractModel->getById($id);
+
+        if (!$quotation || (!AuthService::isAdmin() && (int)$quotation['created_by'] !== AuthService::userId())) {
+            $_SESSION['flash_error'] = 'Cotización no encontrada o sin permiso.';
+            $this->redirect('/quotations');
+            return;
+        }
+
+        // Generar PDF si no existe o el archivo ya no está en disco
+        $pdfPath = null;
+        if (!empty($quotation['generated_pdf_path'])) {
+            $rel     = $quotation['generated_pdf_path'];
+            $pdfPath = APP_ROOT . '/public' . (strpos($rel, '/uploads/') === 0 ? $rel : '/uploads/contracts/' . $rel);
+        }
+
+        if (empty($pdfPath) || !file_exists($pdfPath)) {
+            $pdfResult = (new PdfGeneratorService())->saveQuotationPdf($id);
+            if ($pdfResult['status']) {
+                $pdfPath  = $pdfResult['file_path'];
+                $quotation = $contractModel->getById($id);
+            }
+        }
+
+        $recipients = array_unique(array_filter(array_map('trim', (array)($_POST['recipients'] ?? []))));
+        $subject    = trim($_POST['subject'] ?? '') ?: 'Propuesta Comercial — ' . htmlspecialchars($quotation['business_name']);
+        $msgPlain   = trim($_POST['message'] ?? '');
+        $msgHtml    = nl2br(htmlspecialchars($msgPlain));
+
+        if (empty($recipients)) {
+            $_SESSION['flash_error'] = 'Selecciona al menos un destinatario.';
+            $this->redirect('/quotations/show/' . $id);
+            return;
+        }
+
+        $body = "
+            <div style='font-family:Arial,sans-serif;font-size:15px;color:#333;max-width:600px;margin:0 auto;'>
+              <p>{$msgHtml}</p>
+              <hr style='border:none;border-top:1px solid #ddd;margin:24px 0;'>
+              <p style='font-size:12px;color:#888;'>
+                Atankalama — Sistema de Contratos<br>
+                Cotización: <strong>{$quotation['code']}</strong>
+              </p>
+            </div>";
+
+        $pdfName     = 'Cotizacion_' . $quotation['code'] . '.pdf';
+        $mailService = new MailService();
+        $enviados    = 0;
+        $fallidos    = [];
+
+        foreach ($recipients as $email) {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) continue;
+            $ok = $mailService->sendWithAttachment($email, $subject, $body, $pdfPath, $pdfName);
+            $ok ? $enviados++ : $fallidos[] = $email;
+        }
+
+        if ($enviados > 0) {
+            // Marcar como enviada si estaba en borrador
+            if ($quotation['status'] === 'quotation_draft') {
+                $contractModel->changeStatus($id, 'quotation_sent');
+            }
+            $lista = implode(', ', $recipients);
+            (new ContractHistoryModel())->add($id, AuthService::userId(), 'email_enviado', "Correo enviado a: {$lista}");
+            $_SESSION['flash_success'] = "Correo enviado a {$enviados} destinatario(s).";
+        } else {
+            $_SESSION['flash_error'] = 'No se pudo enviar el correo. Revisa la configuración SMTP.';
+        }
+
+        $this->redirect('/quotations/show/' . $id);
     }
 
     private function collectFormData()

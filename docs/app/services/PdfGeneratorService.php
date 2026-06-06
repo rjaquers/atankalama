@@ -13,6 +13,16 @@ use Dompdf\Options;
 class PdfGeneratorService
 {
     /**
+     * Devuelve el logo del hotel como data URI base64 para embeber en PDFs.
+     */
+    private function getLogoBase64()
+    {
+        $logoPath = dirname(APP_ROOT) . '/public/uploads/logoHotelAtankalama.png';
+        if (!file_exists($logoPath)) return null;
+        return 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+    }
+
+    /**
      * Convierte una imagen a base64 embebible en HTML para Dompdf.
      * Dompdf no soporta WebP, por lo que se convierte a JPEG en memoria con GD.
      *
@@ -198,11 +208,17 @@ class PdfGeneratorService
 
         $servicesHtml .= '</tbody></table>';
 
-        // 3. Bloque de totales (neto = base_amount acordado, IVA 19%)
-        $neto      = (float)$q['base_amount'];
-        $iva       = $neto * 0.19;
+        // 3. Bloque de totales: sumar los unit_price de los servicios de la tabla
+        $neto     = 0.0;
+        $currency = 'CLP';
+        foreach ($services as $s) {
+            $neto += (float)$s['unit_price'];
+            if (!empty($s['currency'])) $currency = $s['currency'];
+        }
+        // Fallback: si no hay servicios con precio, usar base_amount del contrato
+        if ($neto == 0) $neto = (float)$q['base_amount'];
+        $iva        = $neto * 0.19;
         $totalFinal = $neto + $iva;
-        $currency  = 'CLP';
 
         $totalsHtml = '
         <table style="width:100%; border-collapse:collapse; margin-top:4px; font-size:10pt;">
@@ -225,6 +241,11 @@ class PdfGeneratorService
 
         $imagesHtml = $this->renderAttachmentsHtml($id);
 
+        $logoSrc  = $this->getLogoBase64();
+        $logoHtml = $logoSrc
+            ? '<img src="' . $logoSrc . '" style="max-height:80px; margin-bottom:10px;">'
+            : '';
+
         return '
         <html>
         <head>
@@ -242,6 +263,7 @@ class PdfGeneratorService
         </head>
         <body>
             <div class="header">
+                '.$logoHtml.'
                 <div class="title">PROPUESTA COMERCIAL</div>
                 <div class="subtitle">Hotel Atankalama — Cotización #'.$q['code'].'</div>
             </div>
@@ -350,21 +372,33 @@ class PdfGeneratorService
 
         $imagesHtml = $this->renderAttachmentsHtml($contractId);
 
+        $logoSrc = $this->getLogoBase64();
+        $logoHeaderHtml = $logoSrc
+            ? '<img src="' . $logoSrc . '" style="max-height:50px; vertical-align:middle;">'
+            : '';
+
         // 3. Construir HTML completo con estructura para Dompdf (Header/Footer fijos)
         $htmlContent = '
         <html>
         <head>
             <style>
-                @page { margin: 100px 50px; }
-                header { position: fixed; top: -70px; left: 0px; right: 0px; height: 60px; text-align: center; border-bottom: 1px solid #eee; font-size: 9pt; color: #777; }
-                footer { position: fixed; bottom: -70px; left: 0px; right: 0px; height: 50px; text-align: center; border-top: 1px solid #eee; font-size: 8pt; color: #999; }
+                @page { margin: 110px 50px 70px; }
+                header { position: fixed; top: -80px; left: 0px; right: 0px; height: 70px; border-bottom: 1px solid #1a3a5c; font-size: 9pt; color: #777; }
+                header table { width: 100%; border-collapse: collapse; }
+                header td { vertical-align: middle; padding: 4px 0; }
+                footer { position: fixed; bottom: -50px; left: 0px; right: 0px; height: 40px; text-align: center; border-top: 1px solid #eee; font-size: 8pt; color: #999; }
                 .page-number:after { content: counter(page); }
                 body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #333; }
                 table { width: 100%; border-collapse: collapse; }
             </style>
         </head>
         <body>
-            <header>' . $headerText . '</header>
+            <header>
+                <table><tr>
+                    <td style="width:120px;">' . $logoHeaderHtml . '</td>
+                    <td style="text-align:right; font-size:9pt; color:#777;">' . $headerText . '</td>
+                </tr></table>
+            </header>
             <footer>' . $footerText . ' | Página <span class="page-number"></span></footer>
             <main>' . $bodyHtml . '
             ' . $imagesHtml . '

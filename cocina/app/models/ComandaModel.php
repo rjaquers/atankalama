@@ -11,6 +11,32 @@ class ComandaModel
     {
         $this->conn    = Database::getInstance();
         $this->tickets = TicketsDatabase::getInstance();
+        $this->ensureColumns();
+    }
+
+    /** Agrega columnas nuevas a coci_comandas si no existen (migración automática). */
+    private function ensureColumns(): void
+    {
+        static $checked = false;
+        if ($checked) return;
+        $checked = true;
+
+        $db   = $this->conn->query('SELECT DATABASE()')->fetchColumn();
+        $cols = $this->conn->query(
+            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+             WHERE TABLE_SCHEMA = '{$db}' AND TABLE_NAME = 'coci_comandas'"
+        )->fetchAll(PDO::FETCH_COLUMN);
+
+        $missing = [
+            'reserva_id' => 'INT NULL DEFAULT NULL',
+            'project_id' => 'INT NULL DEFAULT NULL',
+        ];
+
+        foreach ($missing as $col => $def) {
+            if (!in_array($col, $cols, true)) {
+                $this->conn->exec("ALTER TABLE coci_comandas ADD COLUMN {$col} {$def}");
+            }
+        }
     }
 
     // ─────────────────────────────────────────────────────────
@@ -123,25 +149,26 @@ class ComandaModel
         int     $esParaLlevar  = 0,
         string  $origen        = 'programada',
         ?int    $ordenId       = null,
-        ?int    $reservaId     = null
+        ?int    $reservaId     = null,
+        ?int    $projectId     = null
     ): int {
         $stmt = $this->conn->prepare(
             "INSERT INTO coci_comandas
                (fecha, tipo_servicio, nombre_hotel, tipo_solicitante,
                 company_id, contract_id, nombre_empresa, nombre_contacto,
                 cantidad_personas, hora_servicio, observaciones,
-                es_para_llevar, origen, orden_id, reserva_id)
+                es_para_llevar, origen, orden_id, reserva_id, project_id)
              VALUES
                (?, ?, ?, ?,
                 ?, ?, ?, ?,
                 ?, ?, ?,
-                ?, ?, ?, ?)"
+                ?, ?, ?, ?, ?)"
         );
         $stmt->execute([
             $fecha, $tipoServicio, $nombreHotel, $tipoSolicitante,
             $companyId, $contractId, $nombreEmpresa, $nombreContacto,
             $cantidadPersonas, $horaServicio, $observaciones,
-            $esParaLlevar, $origen, $ordenId, $reservaId
+            $esParaLlevar, $origen, $ordenId, $reservaId, $projectId
         ]);
         return (int) $this->conn->lastInsertId();
     }
@@ -164,7 +191,8 @@ class ComandaModel
         ?string $horaServicio,
         ?string $observaciones,
         int     $esParaLlevar = 0,
-        ?int    $reservaId    = null
+        ?int    $reservaId    = null,
+        ?int    $projectId    = null
     ): array {
         $ids = [];
         foreach ($fechas as $fecha) {
@@ -172,7 +200,7 @@ class ComandaModel
                 $fecha, $tipoServicio, $nombreHotel, $tipoSolicitante,
                 $companyId, $contractId, $nombreEmpresa, $nombreContacto,
                 $cantidadPersonas, $horaServicio, $observaciones, $esParaLlevar,
-                'programada', null, $reservaId
+                'programada', null, $reservaId, $projectId
             );
         }
         return $ids;

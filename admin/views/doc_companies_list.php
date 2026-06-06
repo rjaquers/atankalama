@@ -29,6 +29,7 @@
             <table id="tablaEmpresas" class="table table-striped table-hover align-middle">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Razón Social</th>
                         <th>RUT</th>
                         <th>Tipo</th>
@@ -41,6 +42,7 @@
                 <tbody>
                 <?php foreach ($companies as $c): ?>
                     <tr>
+                        <td class="text-muted small"><?= $c['id'] ?></td>
                         <td>
                             <strong><?= htmlspecialchars($c['business_name']) ?></strong>
                             <?php if ($c['trade_name']): ?>
@@ -69,7 +71,15 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="index.php?route=doc_companies/edit&id=<?= $c['id'] ?>" 
+                                <a href="index.php?route=doc_companies/proyectos&company=<?= $c['id'] ?>"
+                                   class="btn btn-outline-info" title="Proyectos">
+                                    <i class="bi bi-diagram-3-fill"></i>
+                                </a>
+                                <a href="index.php?route=emp/usuarios/list&company=<?= $c['id'] ?>"
+                                   class="btn btn-outline-warning" title="Usuarios con acceso al portal">
+                                    <i class="bi bi-people-fill"></i>
+                                </a>
+                                <a href="index.php?route=doc_companies/edit&id=<?= $c['id'] ?>"
                                    class="btn btn-outline-primary" title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </a>

@@ -1,6 +1,12 @@
 <?php
 class TableroModel extends Model
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->asegurarEsquema('trell_tableros');
+    }
+
     public function debugPermisos(int $tablero_id, int $usuario_id): string
     {
         $stmt = $this->conn->prepare(
@@ -16,6 +22,7 @@ class TableroModel extends Model
 
     public function debugEsquema(string $tabla = 'trell_tarjetas'): string
     {
+        $this->asegurarEsquema($tabla);
         $res = $this->conn->query("DESCRIBE $tabla");
         if (!$res) return "Error: " . $this->conn->error;
         $fields = [];
@@ -182,14 +189,6 @@ class TableroModel extends Model
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();
         return $row ? (int)$row['tablero_id'] : null;
-    }
-
-    private function columnaExiste(string $tabla, string $columna): bool
-    {
-        $tabla   = preg_replace('/[^a-zA-Z0-9_]/', '', $tabla);
-        $columna = preg_replace('/[^a-zA-Z0-9_]/', '', $columna);
-        $res     = $this->conn->query("SHOW COLUMNS FROM `$tabla` LIKE '$columna'");
-        return $res && $res->num_rows > 0;
     }
 
     public function actualizarFondo(int $id, string $fondo_color, string $fondo_imagen): bool

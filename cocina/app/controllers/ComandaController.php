@@ -4,6 +4,7 @@ require_once __DIR__ . '/../models/ComandaModel.php';
 require_once __DIR__ . '/../models/EmpresaModel.php';
 require_once __DIR__ . '/../models/RecepcionModel.php';
 require_once __DIR__ . '/../models/ReservaModel.php';
+require_once __DIR__ . '/../models/DesayunoMasivoModel.php';
 
 class ComandaController
 {
@@ -265,6 +266,8 @@ class ComandaController
             $nombreContacto = trim($_POST['nombre_contacto'] ?? '') ?: null;
         }
 
+        $projectId = intval($_POST['project_id'] ?? 0) ?: null;
+
         $model = new ComandaModel();
         $hoy   = date('Y-m-d');
         $ids   = [];
@@ -292,7 +295,7 @@ class ComandaController
                 $fecha, $tipoServicio, $nombreHotel, $tipoSolicitante,
                 $companyId, $contractId, $nombreEmpresa, $nombreContacto,
                 $cantidadPersonas, $horaServicio, $observaciones, 0, $origenFecha,
-                null, $reservaId
+                null, $reservaId, $projectId
             );
             $ids[] = $comandaId;
 
@@ -353,6 +356,14 @@ class ComandaController
             $c['voucher_impresos'] = $voucherCounts[$c['id']]['impresos'] ?? 0;
         }
         unset($c);
+
+        // Desayunos masivos para la fecha seleccionada
+        $dm              = new DesayunoMasivoModel();
+        $masivoAtan      = $dm->obtenerPorFechaHotel($fecha, 'Atankalama');
+        $masivoInn       = $dm->obtenerPorFechaHotel($fecha, 'Atankalama Inn');
+        $totalesMasivo   = $dm->totalesPorHotel($fecha);
+        $totalMasivoAtan = $totalesMasivo['Atankalama']     ?? 0;
+        $totalMasivoInn  = $totalesMasivo['Atankalama Inn'] ?? 0;
 
         require_once __DIR__ . '/../views/comanda/listado.php';
     }
@@ -429,14 +440,27 @@ class ComandaController
             'notes'          => 'Creado desde módulo Cocina',
         ];
 
+        $project_name = trim($_POST['project_name'] ?? '');
+
         try {
             $empresaModel = new EmpresaModel();
             $id = $empresaModel->crearEmpresa($datos);
+
+            $project_id = null;
+            if ($project_name !== '') {
+                $pdo = TicketsDatabase::getInstance();
+                $stmt = $pdo->prepare('INSERT INTO doc_projects (company_id, name, active) VALUES (?, ?, 1)');
+                $stmt->execute([$id, $project_name]);
+                $project_id = (int) $pdo->lastInsertId();
+            }
+
             echo json_encode([
                 'success'       => true,
                 'id'            => $id,
                 'business_name' => $business_name,
-                'contact_name'  => $datos['contact_name']
+                'contact_name'  => $datos['contact_name'],
+                'project_id'    => $project_id,
+                'project_name'  => $project_name,
             ]);
         } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => 'Error al crear empresa: ' . $e->getMessage()]);
@@ -494,6 +518,20 @@ class ComandaController
                 }
             }
         }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // AJAX: Proyectos por empresa
+    // ─────────────────────────────────────────────────────────
+
+    public function proyectosEmpresa(): void
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        $companyId = (int)($_GET['company_id'] ?? 0);
+        if (!$companyId) { echo json_encode([]); exit; }
+        $proyectos = (new EmpresaModel())->listarProyectosPorEmpresa($companyId);
+        echo json_encode($proyectos);
+        exit;
     }
 
     private function convertToWebp(string $source, string $destination, string $ext): bool

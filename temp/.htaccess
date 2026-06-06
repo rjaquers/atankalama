@@ -1,0 +1,14 @@
+# Sistema de Temperaturas - Hotel Atankalama
+# No se requiere URL rewriting (se usa ?route= en index.php)
+
+# Proteger archivos sensibles
+<FilesMatch "(___conec6\.php|composer\.json|composer\.lock|\.env)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Proteger directorio vendor
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^vendor/ - [F,L]
+</IfModule>

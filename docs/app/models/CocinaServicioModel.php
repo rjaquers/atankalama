@@ -172,4 +172,72 @@ class CocinaServicioModel
         $row = $stmt->fetch();
         return $row ?: null;
     }
+
+    /**
+     * Devuelve los desayunos masivos de una empresa desde coci_desayunos_masivos.
+     *
+     * @param  int   $companyId
+     * @param  array $filters   fecha_desde, fecha_hasta (Y-m-d)
+     * @return array
+     */
+    public function getMasivosByCompany(int $companyId, array $filters = []): array
+    {
+        $where  = ['company_id = :company_id'];
+        $params = [':company_id' => $companyId];
+
+        if (!empty($filters['fecha_desde'])) {
+            $where[]               = 'fecha >= :fecha_desde';
+            $params[':fecha_desde'] = $filters['fecha_desde'];
+        }
+
+        if (!empty($filters['fecha_hasta'])) {
+            $where[]               = 'fecha <= :fecha_hasta';
+            $params[':fecha_hasta'] = $filters['fecha_hasta'];
+        }
+
+        $sql = "SELECT * FROM coci_desayunos_masivos
+                WHERE " . implode(' AND ', $where) . "
+                ORDER BY fecha DESC, nombre_hotel ASC, nombre_empresa ASC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Resumen estadístico de desayunos masivos para una empresa.
+     *
+     * @param  int   $companyId
+     * @param  array $filters   fecha_desde, fecha_hasta (Y-m-d)
+     * @return array total_registros, total_pax, atan, inn
+     */
+    public function resumenMasivosByCompany(int $companyId, array $filters = []): array
+    {
+        $where  = ['company_id = :company_id'];
+        $params = [':company_id' => $companyId];
+
+        if (!empty($filters['fecha_desde'])) {
+            $where[]               = 'fecha >= :fecha_desde';
+            $params[':fecha_desde'] = $filters['fecha_desde'];
+        }
+
+        if (!empty($filters['fecha_hasta'])) {
+            $where[]               = 'fecha <= :fecha_hasta';
+            $params[':fecha_hasta'] = $filters['fecha_hasta'];
+        }
+
+        $cond = implode(' AND ', $where);
+
+        $stmt = $this->conn->prepare(
+            "SELECT
+                COUNT(*)                                                             AS total_registros,
+                COALESCE(SUM(cantidad), 0)                                           AS total_pax,
+                COALESCE(SUM(CASE WHEN nombre_hotel = 'Atankalama'     THEN cantidad ELSE 0 END), 0) AS atan,
+                COALESCE(SUM(CASE WHEN nombre_hotel = 'Atankalama Inn' THEN cantidad ELSE 0 END), 0) AS inn
+             FROM coci_desayunos_masivos
+             WHERE {$cond}"
+        );
+        $stmt->execute($params);
+        return $stmt->fetch() ?: ['total_registros' => 0, 'total_pax' => 0, 'atan' => 0, 'inn' => 0];
+    }
 }

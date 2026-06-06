@@ -120,6 +120,24 @@ class TarjetaController extends Controller
         $this->json(['ok' => $ok]);
     }
 
+    // POST /tarjeta/completar { id, completada }
+    public function completar(): void
+    {
+        $d          = $this->input();
+        $id         = (int)($d['id']         ?? 0);
+        $completada = (int)($d['completada'] ?? 0);
+
+        if (!$id) $this->json(['ok' => false, 'error' => 'ID requerido'], 400);
+
+        $tablero_id = $this->modelo->tableroDeTarjeta($id);
+        if (!$tablero_id || !$this->tableroModelo->puedeEditar($tablero_id, $this->usuario_id)) {
+            $this->json(['ok' => false, 'error' => 'Sin permiso'], 403);
+        }
+
+        $ok = $this->modelo->marcarCompletada($id, $completada);
+        $this->json(['ok' => $ok]);
+    }
+
     // POST /tarjeta/archivar
     public function archivar(): void
     {

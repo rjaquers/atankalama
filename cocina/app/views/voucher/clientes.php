@@ -2,6 +2,7 @@
 <html lang='es'>
 <head>
     <?php include(ROOT_PATH . '../public/static/templates/head.php'); ?>
+    <link rel="stylesheet" href="<?= BASE_URL ?>public/static/voucher/clientes.css">
 </head>
 <body class='pro-body'>
     <?php include(ROOT_PATH . '../public/static/templates/menu.php'); ?>
@@ -200,26 +201,26 @@
                         </div>
                     <?php else: ?>
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
+                        <table class="table table-hover table-sm mb-0 align-middle tabla-clientes">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="ps-4" style="width: 50px;">#</th>
+                                    <th class="ps-3" style="width:36px;">#</th>
                                     <th>Nombre</th>
                                     <th>RUT</th>
                                     <th class="text-center">Código</th>
-                                    <th class="text-center">Impresiones</th>
-                                    <th class="text-center px-4">Acciones</th>
+                                    <th class="text-center">Imp.</th>
+                                    <th class="text-center px-2">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php $i = 1; foreach ($clientes as $c): ?>
                                 <?php $veces = (int)($c['veces_impreso'] ?? 0); ?>
                                 <tr>
-                                    <td class="ps-4 text-muted small"><?= $i++ ?></td>
+                                    <td class="ps-3 text-muted"><?= $i++ ?></td>
                                     <td class="fw-semibold"><?= htmlspecialchars($c['nombre']) ?></td>
                                     <td class="text-muted"><?= htmlspecialchars($c['rut'] ?? '—') ?></td>
                                     <td class="text-center">
-                                        <code class="small"><?= htmlspecialchars($c['codigo']) ?></code>
+                                        <code><?= htmlspecialchars($c['codigo']) ?></code>
                                     </td>
                                     <td class="text-center">
                                         <?php if ($veces === 0): ?>
@@ -232,7 +233,7 @@
                                             </span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="text-center px-4">
+                                    <td class="text-center px-2">
                                         <div class="d-flex gap-1 justify-content-center">
                                             <a href="index.php?page=voucher/imprimirUno/<?= $c['codigo'] ?>"
                                                class="btn btn-sm <?= $veces > 0 ? 'btn-outline-warning' : 'btn-outline-success' ?>"
@@ -517,6 +518,44 @@
                             <span class="text-muted small fw-semibold">Total vouchers</span>
                             <strong class="text-dark"><?= count($clientes) + count($genericos) ?></strong>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Comentarios / Observaciones -->
+                <div class="pro-card border-0 mt-3">
+                    <div class="card-header bg-transparent py-2 px-4"
+                         style="border-bottom:1px solid var(--color-border);">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-chat-left-text me-2 text-secondary"></i>Comentarios
+                        </h6>
+                    </div>
+                    <div class="card-body px-4 py-3">
+                        <form method="POST" action="index.php?page=voucher/guardarEdicionComanda">
+                            <input type="hidden" name="id"               value="<?= $comanda['id'] ?>">
+                            <input type="hidden" name="redir"            value="voucher/clientes/<?= $comanda['id'] ?>&ok=comanda_editada">
+                            <input type="hidden" name="nombre_hotel"     value="<?= htmlspecialchars($comanda['nombre_hotel']) ?>">
+                            <input type="hidden" name="hora_servicio"    value="<?= $comanda['hora_servicio'] ? substr($comanda['hora_servicio'], 0, 5) : '' ?>">
+                            <input type="hidden" name="cantidad_personas" value="<?= (int)$comanda['cantidad_personas'] ?>">
+                            <input type="hidden" name="es_para_llevar"   value="<?= (int)$comanda['es_para_llevar'] ?>">
+                            <input type="hidden" name="nombre_empresa"   value="<?= htmlspecialchars($comanda['nombre_empresa'] ?? '') ?>">
+                            <input type="hidden" name="nombre_contacto"  value="<?= htmlspecialchars($comanda['nombre_contacto'] ?? '') ?>">
+
+                            <div class="d-flex flex-wrap gap-1 mb-2">
+                                <?php foreach (['Turno Día','Turno Noche','Ensalada de fruta','Hipocalórico','Cena Especial'] as $tag): ?>
+                                <button type="button" class="btn btn-xs btn-light border text-muted fw-bold px-2 py-0"
+                                        style="font-size:0.65rem; border-radius:6px;"
+                                        onclick="addObs(this.textContent)">+ <?= $tag ?></button>
+                                <?php endforeach; ?>
+                            </div>
+                            <textarea name="observaciones" id="obsTextarea" class="form-control form-control-sm border-0 shadow-sm bg-light mb-2"
+                                      rows="3" placeholder="Sin comentarios..."
+                                      style="font-size:0.82rem; resize:none;"><?= htmlspecialchars($comanda['observaciones'] ?? '') ?></textarea>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-sm btn-primary px-3">
+                                    <i class="bi bi-save me-1"></i>Guardar
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
@@ -848,52 +887,6 @@
         </div>
     </div>
 
-    <script>
-        // Función para formatear RUT
-        function formatRut(value) {
-            let v = value.replace(/[^0-9kK]/g, '').toUpperCase();
-            if (v.length > 1) v = v.slice(0, -1).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + '-' + v.slice(-1);
-            return v;
-        }
-
-        // Formato RUT chileno en tiempo real
-        const rutInput = document.getElementById('rut-input');
-        if (rutInput) {
-            rutInput.addEventListener('input', function () {
-                this.value = formatRut(this.value);
-            });
-        }
-
-        // Formato RUT en el modal de editar cliente
-        document.getElementById('edit_rut').addEventListener('input', function () {
-            this.value = formatRut(this.value);
-        });
-
-        // Modal editar cliente
-        const modalEditar = new bootstrap.Modal(document.getElementById('modalEditarCliente'));
-        document.querySelectorAll('.btn-editar-cliente').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('edit_id').value     = this.dataset.id;
-                document.getElementById('edit_nombre').value = this.dataset.nombre;
-                document.getElementById('edit_rut').value    = this.dataset.rut;
-                const chk = document.getElementById('editPropagar');
-                if (chk) chk.checked = false;
-                modalEditar.show();
-            });
-        });
-
-        // Modal eliminar cliente
-        const modalEliminar = new bootstrap.Modal(document.getElementById('modalEliminarCliente'));
-        document.querySelectorAll('.btn-eliminar-cliente').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.getElementById('eliminar_id').value           = this.dataset.id;
-                document.getElementById('eliminar_nombre_display').textContent = this.dataset.nombre;
-                const chk = document.getElementById('eliminarPropagar');
-                if (chk) chk.checked = false;
-                modalEliminar.show();
-            });
-        });
-
-    </script>
+    <script src="<?= BASE_URL ?>public/static/voucher/clientes.js"></script>
 </body>
 </html>

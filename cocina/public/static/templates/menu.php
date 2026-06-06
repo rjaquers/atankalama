@@ -73,6 +73,12 @@
                                 <i class='bi bi-sun-fill me-2 text-info'></i>Desayuno
                             </a>
                         </li>
+                        <li>
+                            <a class="dropdown-item <?= ($_GET['page'] ?? '') === 'desayuno/tablero' ? 'active' : '' ?>"
+                                href='index.php?page=desayuno/tablero'>
+                                <i class='bi bi-table me-2 text-warning'></i>Desayuno Masivo
+                            </a>
+                        </li>
                         <li><hr class='dropdown-divider'></li>
                         <li>
                             <a class="dropdown-item <?= ($_GET['page'] ?? '') === 'comanda/listado' ? 'active' : '' ?>"
@@ -92,9 +98,10 @@
 
                 <!-- Dropdown Sistema / Gestión -->
                 <li class='nav-item dropdown'>
-                    <?php 
-                    $gestionPages = ['recepcion/listado', 'producto/index', 'estadistica/index', 'Reporte/ver', 'cocina/log'];
-                    $isGestionActive = in_array($_GET['page'] ?? '', $gestionPages);
+                    <?php
+                    $gestionPages = ['recepcion/listado', 'producto/index', 'estadistica/index', 'Reporte/ver', 'cocina/log', 'empresa/index'];
+                    $isGestionActive = in_array($_GET['page'] ?? '', $gestionPages)
+                        || str_starts_with($_GET['page'] ?? '', 'empresa/');
                     ?>
                     <a class="nav-link dropdown-toggle <?= $isGestionActive ? 'active' : '' ?>"
                         href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'>
@@ -125,6 +132,12 @@
                                 <i class="bi bi-file-earmark-spreadsheet me-2"></i> Excel
                             </a>
                         </li>
+                        <li>
+                            <a class="dropdown-item <?= str_starts_with($_GET['page'] ?? '', 'empresa/') ? 'active' : '' ?>"
+                                href='index.php?page=empresa/index'>
+                                <i class="bi bi-building me-2"></i> Empresas
+                            </a>
+                        </li>
                         <li><hr class='dropdown-divider'></li>
                         <li>
                             <a class="dropdown-item <?= ($_GET['page'] ?? '') === 'cocina/log' ? 'active' : '' ?>"
@@ -133,6 +146,13 @@
                             </a>
                         </li>
                     </ul>
+                </li>
+
+                <li class='nav-item'>
+                    <a href='index.php?page=voucher/kiosko' target='_blank'
+                       class='nav-link px-2' title='Kiosko Vouchers'>
+                        <i class='bi bi-display fs-5'></i>
+                    </a>
                 </li>
 
                 <li class='nav-item'>

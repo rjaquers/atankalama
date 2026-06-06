@@ -347,6 +347,101 @@
   </div>
 </div>
 
+<!-- Desayunos Masivos -->
+<div class="card mt-4 fade-in">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h6 class="mb-0">
+        <i class="fa-solid fa-table text-warning"></i>
+        Desayunos Masivos
+        <?php if((int)$resumenMasivos['total_registros'] > 0): ?>
+          <span class="badge bg-secondary ms-1"><?= (int)$resumenMasivos['total_registros'] ?></span>
+        <?php endif; ?>
+      </h6>
+    </div>
+    <div class="d-flex gap-2 flex-wrap small">
+      <span class="badge bg-primary"><i class="fa-solid fa-building"></i> Atankalama: <?= (int)$resumenMasivos['atan'] ?> PAX</span>
+      <span class="badge bg-info text-dark"><i class="fa-solid fa-building"></i> Inn: <?= (int)$resumenMasivos['inn'] ?> PAX</span>
+      <span class="badge bg-dark"><i class="fa-solid fa-users"></i> Total: <?= (int)$resumenMasivos['total_pax'] ?> PAX</span>
+    </div>
+  </div>
+
+  <!-- Filtro de fechas -->
+  <div class="card-body border-bottom pb-3">
+    <form method="GET" action="" class="row g-2 align-items-end">
+      <input type="hidden" name="url" value="companies/show/<?= (int)$company['id'] ?>">
+      <?php foreach (['tipo_servicio','cobrado','sin_contrato'] as $k): ?>
+        <?php if(!empty($filtrosServicio[$k])): ?>
+          <input type="hidden" name="<?= $k ?>" value="<?= htmlspecialchars($filtrosServicio[$k]) ?>">
+        <?php endif; ?>
+      <?php endforeach; ?>
+
+      <div class="col-sm-6 col-md-3">
+        <label class="form-label small text-muted mb-1">Desde</label>
+        <input type="date" name="fecha_desde" class="form-control form-control-sm"
+               value="<?= htmlspecialchars($filtrosMasivo['fecha_desde']) ?>">
+      </div>
+      <div class="col-sm-6 col-md-3">
+        <label class="form-label small text-muted mb-1">Hasta</label>
+        <input type="date" name="fecha_hasta" class="form-control form-control-sm"
+               value="<?= htmlspecialchars($filtrosMasivo['fecha_hasta']) ?>">
+      </div>
+      <div class="col-sm-6 col-md-2 d-flex gap-1">
+        <button type="submit" class="btn btn-sm btn-primary flex-fill">
+          <i class="fa-solid fa-filter"></i> Filtrar
+        </button>
+        <a href="?url=companies/show/<?= (int)$company['id'] ?>" class="btn btn-sm btn-outline-secondary">
+          <i class="fa-solid fa-xmark"></i>
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabla de masivos -->
+  <div class="card-body p-0">
+    <?php if(empty($desayunosMasivos)): ?>
+      <div class="text-center text-muted py-4">
+        <i class="fa-solid fa-table fa-3x mb-3 opacity-25"></i>
+        <p>No hay desayunos masivos registrados para esta empresa<?= ($filtrosMasivo['fecha_desde'] || $filtrosMasivo['fecha_hasta']) ? ' en el rango seleccionado' : '' ?>.</p>
+        <a href="https://www.atankalama.com/cocina/public/index.php?page=desayuno/tablero"
+           target="_blank" class="btn btn-sm btn-outline-warning">
+          <i class="fa-solid fa-external-link-alt me-1"></i>Ir al tablero de desayunos
+        </a>
+      </div>
+    <?php else: ?>
+    <div class="table-responsive">
+      <table class="table table-hover table-sm mb-0" id="tablaMasivos">
+        <thead class="table-light">
+          <tr>
+            <th>Fecha</th>
+            <th>Hotel</th>
+            <th>Proyecto</th>
+            <th class="text-center">PAX</th>
+            <th>Observaciones</th>
+            <th>Registrado por</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach($desayunosMasivos as $dm): ?>
+          <tr>
+            <td class="text-nowrap" data-order="<?= htmlspecialchars($dm['fecha']) ?>"><?= date('d/m/Y', strtotime($dm['fecha'])) ?></td>
+            <td class="small"><?= htmlspecialchars($dm['nombre_hotel']) ?></td>
+            <td class="small text-muted"><?= htmlspecialchars($dm['nombre_proyecto'] ?: '—') ?></td>
+            <td class="text-center fw-bold"><?= (int)$dm['cantidad'] ?></td>
+            <td class="small text-muted" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"
+                title="<?= htmlspecialchars($dm['observaciones'] ?? '') ?>">
+              <?= htmlspecialchars($dm['observaciones'] ?: '—') ?>
+            </td>
+            <td class="small text-muted"><?= htmlspecialchars($dm['registrado_por']) ?></td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+    <?php endif; ?>
+  </div>
+</div>
+
 <!-- Modal: Resumen por Hotel -->
 <div class="modal fade" id="modalResumenHoteles" tabindex="-1" aria-labelledby="modalResumenHotelesLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
@@ -395,6 +490,19 @@ $(function () {
       order: [[0, 'desc']],
       columnDefs: [
         { orderable: false, targets: [7, 8, 9] }
+      ],
+      pageLength: 25,
+      language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-CL.json'
+      }
+    });
+  }
+
+  if ($('#tablaMasivos').length) {
+    $('#tablaMasivos').DataTable({
+      order: [[0, 'desc']],
+      columnDefs: [
+        { orderable: false, targets: [4, 5] }
       ],
       pageLength: 25,
       language: {

@@ -73,4 +73,56 @@ class EmpresaModel
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function listarProyectosPorEmpresa(int $companyId): array
+    {
+        $stmt = $this->conn->prepare(
+            'SELECT id, name FROM doc_projects WHERE company_id = ? AND active = 1 ORDER BY name ASC'
+        );
+        $stmt->execute([$companyId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function listarTodasEmpresas(): array
+    {
+        $stmt = $this->conn->prepare(
+            'SELECT c.id, c.rut, c.business_name, c.trade_name, c.contact_name,
+                    c.contact_email, c.contact_phone, c.type,
+                    (SELECT COUNT(*) FROM doc_projects p WHERE p.company_id = c.id AND p.active = 1) AS proyectos
+             FROM doc_companies c
+             WHERE c.active = 1
+             ORDER BY c.business_name ASC'
+        );
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerEmpresaCompleta(int $id): ?array
+    {
+        $stmt = $this->conn->prepare(
+            'SELECT id, rut, business_name, trade_name, contact_name, contact_email,
+                    contact_phone, address, city, type, notes
+             FROM doc_companies
+             WHERE id = :id AND active = 1'
+        );
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    public function crearProyecto(int $companyId, string $nombre): int
+    {
+        $stmt = $this->conn->prepare(
+            'INSERT INTO doc_projects (company_id, name, active) VALUES (:company_id, :name, 1)'
+        );
+        $stmt->execute([':company_id' => $companyId, ':name' => $nombre]);
+        return (int) $this->conn->lastInsertId();
+    }
+
+    public function eliminarProyecto(int $id): void
+    {
+        $stmt = $this->conn->prepare('UPDATE doc_projects SET active = 0 WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+    }
 }

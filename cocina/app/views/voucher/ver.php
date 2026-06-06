@@ -31,116 +31,13 @@
     ?>
 
     <style>
-        body { background: #f0f4f8; font-family: 'Segoe UI', Arial, sans-serif; }
-
-        .voucher-container {
-            max-width: 480px;
-            margin: 40px auto;
-            padding: 0 16px;
-        }
-
-        .voucher-card {
-            background: #fff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 24px rgba(0,0,0,.1);
-        }
-
-        .voucher-header {
-            background: <?= $colorHex ?>;
-            color: <?= $colorBadge === 'warning' ? '#000' : '#fff' ?>;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .voucher-header img { height: 28px; filter: brightness(0)<?= $colorBadge !== 'warning' ? 'invert(1)' : '' ?>; opacity:.9; }
-        .voucher-header .tipo { font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
-
-        .voucher-body {
-            display: flex;
-            gap: 16px;
-            padding: 20px;
-            align-items: flex-start;
-        }
-
-        .voucher-info { flex: 1; }
-
-        .v-nombre {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #212529;
-            line-height: 1.3;
-            margin-bottom: 4px;
-        }
-
-        .v-empresa { font-size: .85rem; color: #6c757d; margin-bottom: 10px; }
-
-        .v-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: .9rem;
-            color: #495057;
-            margin-bottom: 4px;
-        }
-
-        .v-row i { color: <?= $colorHex ?>; width: 16px; }
-
-        .voucher-qr { text-align: center; }
-        .voucher-qr canvas { border-radius: 6px; }
-
-        .v-codigo {
-            font-family: monospace;
-            font-size: .65rem;
-            color: #adb5bd;
-            margin-top: 4px;
-            word-break: break-all;
-        }
-
-        .voucher-footer {
-            border-top: 1px solid #f0f0f0;
-            padding: 10px 20px;
-            font-size: .75rem;
-            color: #adb5bd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .badge-estado {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: .78rem;
-            font-weight: 600;
-        }
-
-        .badge-ok      { background: #d1fae5; color: #065f46; }
-        .badge-pending { background: #fef3c7; color: #92400e; }
-        .badge-vencido { background: #fee2e2; color: #991b1b; }
-        .badge-usado   { background: #fee2e2; color: #991b1b; border: 2px solid #991b1b; animation: pulse 2s infinite; }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .acciones { margin-top: 20px; display: flex; gap: 10px; }
-        .acciones .btn { flex: 1; }
-
-        @media print {
-            body { background: #fff; }
-            .acciones, .info-escane { display: none !important; }
-            .voucher-container { margin: 0; padding: 0; max-width: 100%; }
-            .voucher-card { box-shadow: none; border: 1px solid #ccc; border-radius: 8px; }
-            @page { size: A6 landscape; margin: 8mm; }
-        }
+    :root {
+        --voucher-color: <?= $colorHex ?>;
+        --voucher-text-color: <?= $colorBadge === 'warning' ? '#000' : '#fff' ?>;
+        --voucher-img-filter: brightness(0)<?= $colorBadge !== 'warning' ? ' invert(1)' : '' ?>;
+    }
     </style>
+    <link rel="stylesheet" href="<?= BASE_URL ?>public/static/voucher/ver.css">
 </head>
 <body>
 
@@ -245,19 +142,6 @@
 
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const el = document.getElementById('qrcode');
-    const url = window.location.href;
-    new QRCode(el, {
-        text: url,
-        width: 120,
-        height: 120,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });
-});
-</script>
+<script src="<?= BASE_URL ?>public/static/voucher/ver.js"></script>
 </body>
 </html>

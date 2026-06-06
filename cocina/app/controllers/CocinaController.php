@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/CocinaModel.php';
 require_once __DIR__ . '/../models/ComandaModel.php';
+require_once __DIR__ . '/../models/DesayunoMasivoModel.php';
 require_once __DIR__ . '/../libraries/Mailer.php';
 
 class CocinaController
@@ -32,6 +33,7 @@ class CocinaController
             $almuerzos, $cenas, $colaciones, $especiales, $desayunosManana,
             $resumenAlmuerzos, $resumenCenas, $resumenColaciones, $resumenEspeciales, $resumenDesayunos,
             $totalAlmuerzos, $totalCenas, $totalColaciones, $totalEspeciales, $totalDesayunos,
+            $masivoAtan, $masivoInn, $totalMasivoAtan, $totalMasivoInn,
         ] = $this->cargarDatosComandas();
 
         // Si es una petición AJAX, devolver JSON
@@ -50,7 +52,8 @@ class CocinaController
                     $hoy, $manana,
                     $almuerzos, $cenas, $colaciones, $especiales, $desayunosManana,
                     $resumenAlmuerzos, $resumenCenas, $resumenColaciones, $resumenEspeciales, $resumenDesayunos,
-                    $totalAlmuerzos, $totalCenas, $totalColaciones, $totalEspeciales, $totalDesayunos
+                    $totalAlmuerzos, $totalCenas, $totalColaciones, $totalEspeciales, $totalDesayunos,
+                    $masivoAtan, $masivoInn, $totalMasivoAtan, $totalMasivoInn
                 ),
             ]);
             return;
@@ -71,6 +74,7 @@ class CocinaController
     private function cargarDatosComandas(): array
     {
         $cm     = new ComandaModel();
+        $dm     = new DesayunoMasivoModel();
         $hoy    = date('Y-m-d');
         $manana = date('Y-m-d', strtotime('+1 day'));
 
@@ -92,11 +96,19 @@ class CocinaController
         $totalEspeciales = $cm->totalPersonas($hoy,    'colacion_especial');
         $totalDesayunos  = $cm->totalPersonas($manana, 'desayuno');
 
+        // Desayunos masivos de mañana (nueva tabla)
+        $masivoAtan      = $dm->obtenerPorFechaHotel($manana, 'Atankalama');
+        $masivoInn       = $dm->obtenerPorFechaHotel($manana, 'Atankalama Inn');
+        $totalesMasivo   = $dm->totalesPorHotel($manana);
+        $totalMasivoAtan = $totalesMasivo['Atankalama']     ?? 0;
+        $totalMasivoInn  = $totalesMasivo['Atankalama Inn'] ?? 0;
+
         return [
             $hoy, $manana,
             $almuerzos, $cenas, $colaciones, $especiales, $desayunosManana,
             $resumenAlmuerzos, $resumenCenas, $resumenColaciones, $resumenEspeciales, $resumenDesayunos,
             $totalAlmuerzos, $totalCenas, $totalColaciones, $totalEspeciales, $totalDesayunos,
+            $masivoAtan, $masivoInn, $totalMasivoAtan, $totalMasivoInn,
         ];
     }
 
@@ -105,7 +117,8 @@ class CocinaController
         string $hoy, string $manana,
         array $almuerzos, array $cenas, array $colaciones, array $especiales, array $desayunosManana,
         array $resumenAlmuerzos, array $resumenCenas, array $resumenColaciones, array $resumenEspeciales, array $resumenDesayunos,
-        int $totalAlmuerzos, int $totalCenas, int $totalColaciones, int $totalEspeciales, int $totalDesayunos
+        int $totalAlmuerzos, int $totalCenas, int $totalColaciones, int $totalEspeciales, int $totalDesayunos,
+        array $masivoAtan = [], array $masivoInn = [], int $totalMasivoAtan = 0, int $totalMasivoInn = 0
     ): string {
         ob_start();
         include __DIR__ . '/../views/cocina/tabla_comandas.php';

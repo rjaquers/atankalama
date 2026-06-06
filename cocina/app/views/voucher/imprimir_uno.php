@@ -21,62 +21,7 @@
     $urlQr      = BASE_URL . 'index.php?page=voucher/ver/' . $cliente['codigo'];
     ?>
 
-    <style>
-        body { background: #f5f5f5; font-family: 'Courier New', Courier, monospace; margin: 0; padding: 0; }
-
-        .toolbar {
-            background: #fff;
-            padding: 12px 24px;
-            border-bottom: 1px solid #dee2e6;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .vouchers-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .voucher-thermal {
-            background: #fff;
-            width: 80mm;
-            padding: 5mm;
-            box-sizing: border-box;
-            text-align: center;
-            color: #000;
-        }
-
-        .logo-thermal { max-width: 60mm; height: auto; margin-bottom: 4mm; filter: grayscale(1) contrast(1.5); }
-        .hotel-name   { font-size: 16pt; font-weight: bold; letter-spacing: 2pt; margin-bottom: 3mm; }
-        .service-type { font-size: 14pt; font-weight: bold; text-transform: uppercase; border: 2pt solid #000; padding: 2mm 4mm; display: inline-block; margin: 3mm 0; }
-
-        .voucher-info { margin: 4mm 0; line-height: 1.4; }
-        .v-nombre  { font-size: 13pt; font-weight: bold; margin-bottom: 2mm; }
-        .v-empresa { font-size: 18pt; font-weight: bold; margin-bottom: 3mm; line-height: 1.3; }
-        .v-fecha   { font-size: 11pt; font-weight: bold; }
-        .v-hora    { font-size: 11pt; }
-        .v-obs     { font-size: 9pt; border: 1pt dashed #000; padding: 2mm 3mm; margin: 3mm 0; text-align: left; line-height: 1.4; }
-
-        .qr-container { margin: 5mm 0 2mm; }
-        .qr-container canvas { width: 65mm !important; height: 65mm !important; }
-
-        .v-codigo  { font-size: 8pt; color: #333; margin-top: 2mm; letter-spacing: 1pt; }
-        .v-footer  { font-size: 9pt; border-top: 1pt solid #000; padding-top: 3mm; margin-top: 2mm; font-style: italic; line-height: 1.6; }
-
-        @media print {
-            body { background: #fff; }
-            .toolbar { display: none !important; }
-            .vouchers-container { padding: 0; }
-            .voucher-thermal { width: 80mm; margin: 0; }
-            @page { size: 80mm auto; margin: 0; }
-        }
-    </style>
+    <link rel="stylesheet" href="<?= BASE_URL ?>public/static/voucher/imprimir_uno.css">
 </head>
 <body>
 
@@ -127,22 +72,8 @@
         </div>
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        new QRCode(document.getElementById('qr-voucher'), {
-            text: '<?= addslashes($urlQr) ?>',
-            width: 180,
-            height: 180,
-            colorDark : '#000000',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.H
-        });
-
-        document.getElementById('btnImprimir').addEventListener('click', function () {
-            window.print();
-        });
-    });
-    </script>
+    <script>const VOUCHER_QR_URL = '<?= addslashes($urlQr) ?>';</script>
+    <script src="<?= BASE_URL ?>public/static/voucher/imprimir_uno.js"></script>
 
 </body>
 </html>

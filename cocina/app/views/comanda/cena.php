@@ -307,6 +307,13 @@
                                     <option value="">— Elige empresa —</option>
                                 </select>
                             </div>
+                            <div class="col-md-8" id="contenedorProyectos" style="display:none;">
+                                <label class="form-label text-muted small fw-bold mb-1">
+                                    <i class="bi bi-diagram-3 me-1"></i>Proyecto / Faena <span class="fw-normal opacity-50">(opt)</span>
+                                </label>
+                                <div id="listaProyectos" class="d-flex flex-wrap gap-2 align-items-center" style="min-height:31px;"></div>
+                                <input type="hidden" name="project_id" id="inputProjectId" value="">
+                            </div>
                         </div>
                     </div>
 
@@ -431,6 +438,10 @@
                                 <label class="form-label fw-bold small text-muted">Ciudad</label>
                                 <input type="text" name="city" class="form-control">
                             </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold small text-muted">Proyecto (faena) – opcional</label>
+                                <input type="text" name="project_name" class="form-control" placeholder="Ej: Faena Norte, Proyecto Collahuasi…">
+                            </div>
                             <hr class="my-2">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold small text-muted">Nombre Contacto</label>
@@ -510,7 +521,13 @@
                     
                     // 3. Disparar el evento change para actualizar otros campos
                     selectEmpresa.dispatchEvent(new Event('change'));
-                    
+
+                    if (res.project_id) {
+                        selectEmpresa.dispatchEvent(new CustomEvent('proyectoCreadoConEmpresa', {
+                            detail: { project_id: res.project_id, project_name: res.project_name }
+                        }));
+                    }
+
                     // 4. Cerrar modal y limpiar
                     modalNuevaEmpresa.hide();
                     formNuevaEmpresa.reset();
@@ -556,6 +573,14 @@
             sel.innerHTML = '<option value="">Cargando...</option>';
             sel.disabled  = true;
 
+            // ── Resetear proyectos siempre que cambie la empresa ─
+            const contenedorProyectos = document.getElementById('contenedorProyectos');
+            const listaProyectos      = document.getElementById('listaProyectos');
+            const inputProjectId      = document.getElementById('inputProjectId');
+            listaProyectos.innerHTML  = '';
+            inputProjectId.value      = '';
+            contenedorProyectos.style.display = 'none';
+
             if (!this.value) {
                 sel.innerHTML = '<option value="">— Elige empresa primero —</option>';
                 return;
@@ -574,6 +599,38 @@
                     sel.disabled = false;
                 })
                 .catch(() => { sel.innerHTML = '<option value="">Error</option>'; sel.disabled = false; });
+
+            // ── Cargar proyectos de la empresa seleccionada ──────
+            fetch('index.php?page=comanda/proyectosEmpresa&company_id=' + this.value)
+                .then(r => r.json())
+                .then(proyectos => {
+                    if (!proyectos.length) return;
+                    proyectos.forEach(p => {
+                        const btnId = 'proj_' + p.id;
+                        const input = document.createElement('input');
+                        input.type        = 'checkbox';
+                        input.className   = 'btn-check';
+                        input.id          = btnId;
+                        input.autocomplete = 'off';
+                        input.addEventListener('change', function () {
+                            // Solo uno seleccionado a la vez
+                            document.querySelectorAll('#listaProyectos .btn-check').forEach(c => {
+                                if (c !== this) c.checked = false;
+                            });
+                            inputProjectId.value = this.checked ? p.id : '';
+                        });
+                        const label = document.createElement('label');
+                        label.className        = 'btn btn-outline-secondary btn-sm fw-bold';
+                        label.style.borderRadius = '8px';
+                        label.style.fontSize     = '12px';
+                        label.htmlFor            = btnId;
+                        label.textContent        = p.name;
+                        listaProyectos.appendChild(input);
+                        listaProyectos.appendChild(label);
+                    });
+                    contenedorProyectos.style.display = '';
+                })
+                .catch(() => {});
         });
 
         // ── Alerta urgente ───────────────────────────────────
@@ -677,10 +734,10 @@
         inputRespaldos.addEventListener('change', function() {
             filePreview.innerHTML = '';
             const files = this.files;
-            
+
             if (files.length > 0) {
                 fileCount.textContent = `${files.length} archivo(s) seleccionado(s)`;
-                
+
                 Array.from(files).forEach(file => {
                     const reader = new FileReader();
                     const card = document.createElement('div');
@@ -689,7 +746,7 @@
                     card.style.maxWidth = '250px';
 
                     const isImg = file.type.startsWith('image/');
-                    
+
                     if (isImg) {
                         reader.onload = function(e) {
                             card.innerHTML = `
@@ -711,6 +768,23 @@
                 });
             } else {
                 fileCount.textContent = 'Ningún archivo seleccionado';
+            }
+        });
+
+        // ── Evento proyectoCreadoConEmpresa (desde modal nueva empresa+proyecto) ──
+        selectEmpresa.addEventListener('proyectoCreadoConEmpresa', function(e) {
+            const { project_id, project_name } = e.detail;
+            // Marcar el checkbox del proyecto si ya está en la lista
+            const chk = document.getElementById('proj_' + project_id);
+            if (chk) {
+                chk.checked = true;
+                document.getElementById('inputProjectId').value = project_id;
+            } else {
+                // Si la lista aún no cargó, esperar y reintentar
+                setTimeout(() => {
+                    const chk2 = document.getElementById('proj_' + project_id);
+                    if (chk2) { chk2.checked = true; document.getElementById('inputProjectId').value = project_id; }
+                }, 800);
             }
         });
 

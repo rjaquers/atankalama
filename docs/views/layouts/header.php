@@ -142,24 +142,27 @@
         <?php endif; ?>
       </ul>
 
-      <!-- Derecha: Usuario + Inicio + Logout -->
+      <!-- Derecha: Usuario dropdown -->
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <span class="nav-link text-light">
-            <i class="fa-regular fa-user"></i>
-            <?= htmlspecialchars($_SESSION['user_name'] ?? 'Usuario') ?>
-            <span class="badge bg-light text-dark ms-1"><?= htmlspecialchars(ucfirst($_SESSION['role'] ?? '')) ?></span>
-          </span>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-secondary" href="https://www.atankalama.com/login/index.php?route=dashboard">
-            <i class="bi bi-house-door me-1"></i> Inicio
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-regular fa-circle-user"></i>
+            <span><?= htmlspecialchars($_SESSION['user_name'] ?? 'Usuario') ?></span>
+            <span class="badge bg-white bg-opacity-25 text-white"><?= htmlspecialchars(ucfirst($_SESSION['role'] ?? '')) ?></span>
           </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-danger" href="<?= BASE_URL ?>/logout">
-            <i class="bi bi-power me-1"></i> Salir
-          </a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+            <li>
+              <a class="dropdown-item" href="https://www.atankalama.com/login/index.php?route=dashboard">
+                <i class="bi bi-house-door me-2"></i> Inicio
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-danger" href="<?= BASE_URL ?>/logout">
+                <i class="bi bi-power me-2"></i> Salir
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
       <?php else: ?>

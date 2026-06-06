@@ -1,0 +1,18 @@
+# CLAUDE.md
+
+Este archivo proporciona orientación a Claude Code (claude.ai/code) al trabajar con el código en este repositorio.
+
+## Qué hace esta aplicación
+
+**Temp** es un sistema interno de registro de temperaturas de los alimentos que se sirven en los hoteles de Atankalama. tiene registro historico de fotografías, sube las fotos y las transforma en formatos para laweb para ser mas livianos. El registro es a través de un formulario, y se envian las fotos una vez al dia por medio de un cron.
+
+## Ejecución de la aplicación
+
+**Con Docker (recomendado):**
+```bash
+cd docker
+docker-compose up -d
+# Aplicación disponible en http://temp/
+```
+
+

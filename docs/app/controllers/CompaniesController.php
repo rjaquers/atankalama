@@ -126,16 +126,25 @@ class CompaniesController extends Controller
             'sin_contrato'  => !empty($_GET['sin_contrato']),
         ];
 
+        $filtrosMasivo = [
+            'fecha_desde' => $filtrosServicio['fecha_desde'],
+            'fecha_hasta' => $filtrosServicio['fecha_hasta'],
+        ];
+
         try {
             $cocinaModel           = new CocinaServicioModel();
             $serviciosAlimentacion = $cocinaModel->getByCompany((int)$id, $filtrosServicio);
             $resumenServicios      = $cocinaModel->resumenByCompany((int)$id);
+            $desayunosMasivos      = $cocinaModel->getMasivosByCompany((int)$id, $filtrosMasivo);
+            $resumenMasivos        = $cocinaModel->resumenMasivosByCompany((int)$id, $filtrosMasivo);
         } catch (Exception $e) {
             $serviciosAlimentacion = [];
             $resumenServicios      = ['total' => 0, 'cobrado' => 0, 'pendiente' => 0, 'total_personas' => 0, 'sin_contrato' => 0];
+            $desayunosMasivos      = [];
+            $resumenMasivos        = ['total_registros' => 0, 'total_pax' => 0, 'atan' => 0, 'inn' => 0];
         }
 
-        $this->view('companies/show', compact('company', 'contracts', 'serviciosAlimentacion', 'resumenServicios', 'filtrosServicio'));
+        $this->view('companies/show', compact('company', 'contracts', 'serviciosAlimentacion', 'resumenServicios', 'filtrosServicio', 'desayunosMasivos', 'resumenMasivos', 'filtrosMasivo'));
     }
     // Fin de la función show()
 

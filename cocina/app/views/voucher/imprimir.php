@@ -20,84 +20,7 @@
     $logoUrl    = BASE_URL . 'public/static/img/logoAtankalama.png';
     ?>
 
-    <style>
-        /* Estilos base para visualización */
-        body { background: #f5f5f5; font-family: 'Courier New', Courier, monospace; margin: 0; padding: 0; }
-        
-        .toolbar {
-            background: #fff;
-            padding: 12px 24px;
-            border-bottom: 1px solid #dee2e6;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        /* Contenedor de vouchers */
-        .vouchers-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            gap: 0; /* Sin espacio entre ellos para emular rollo térmico si se desea */
-        }
-
-        /* Estilo del Voucher Térmico (80mm) */
-        .voucher-thermal {
-            background: #fff;
-            width: 80mm;
-            padding: 5mm;
-            box-sizing: border-box;
-            border-bottom: 1px dashed #ccc; /* Separador visual */
-            text-align: center;
-            color: #000;
-        }
-
-        .logo-thermal {
-            max-width: 60mm;
-            height: auto;
-            margin-bottom: 4mm;
-            filter: grayscale(1) contrast(1.5);
-        }
-
-        .hotel-name   { font-size: 16pt; font-weight: bold; letter-spacing: 2pt; margin-bottom: 3mm; }
-        .service-type { font-size: 14pt; font-weight: bold; text-transform: uppercase; border: 2pt solid #000; padding: 2mm 4mm; display: inline-block; margin: 3mm 0; }
-
-        .voucher-info { margin: 4mm 0; line-height: 1.4; }
-        .v-nombre  { font-size: 13pt; font-weight: bold; margin-bottom: 2mm; }
-        .v-empresa { font-size: 18pt; font-weight: bold; margin-bottom: 3mm; line-height: 1.3; }
-        .v-fecha   { font-size: 11pt; font-weight: bold; }
-        .v-hora    { font-size: 11pt; }
-
-        .v-obs { font-size: 9pt; border: 1pt dashed #000; padding: 2mm 3mm; margin: 3mm 0; text-align: left; line-height: 1.4; }
-
-        .qr-container { margin: 5mm 0 2mm; }
-        .qr-container canvas { width: 65mm !important; height: 65mm !important; }
-
-        .v-codigo  { font-size: 8pt; color: #333; margin-top: 2mm; letter-spacing: 1pt; }
-        .v-counter { font-size: 13pt; font-weight: bold; letter-spacing: 2pt; margin: 3mm 0; }
-        .v-footer  { font-size: 9pt; border-top: 1pt solid #000; padding-top: 3mm; margin-top: 2mm; font-style: italic; line-height: 1.6; }
-
-        /* ─── AJUSTES DE IMPRESIÓN ─────────────────────────────────────────── */
-        @media print {
-            body { background: #fff; }
-            .toolbar { display: none !important; }
-            .vouchers-container { padding: 0; }
-            .voucher-thermal {
-                border-bottom: 1px solid transparent;
-                page-break-after: always;
-                width: 80mm;
-                margin: 0;
-            }
-            @page {
-                size: 80mm auto;
-                margin: 0;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="<?= BASE_URL ?>public/static/voucher/imprimir.css">
 </head>
 <body>
 
@@ -143,6 +66,9 @@
                     </div>
                 <?php endif; ?>
                 <div class="v-fecha"><?= mb_strtoupper($fechaTexto) ?></div>
+                <?php if (!empty($projectName)): ?>
+                    <div class="v-proyecto" style="font-size:10pt; font-weight:bold; text-transform:uppercase; margin: 2mm 0; letter-spacing:1pt; border-bottom: 1pt dashed #000; padding-bottom: 2mm;"><?= htmlspecialchars($projectName) ?></div>
+                <?php endif; ?>
                 <?php if ($hora): ?>
                     <div class="v-hora">HORA: <?= $hora ?></div>
                 <?php endif; ?>
@@ -181,6 +107,9 @@
                     <div class="v-empresa"><?= htmlspecialchars($comanda['nombre_empresa']) ?></div>
                 <?php endif; ?>
                 <div class="v-fecha"><?= mb_strtoupper($fechaTexto) ?></div>
+                <?php if (!empty($projectName)): ?>
+                    <div class="v-proyecto" style="font-size:10pt; font-weight:bold; text-transform:uppercase; margin: 2mm 0; letter-spacing:1pt; border-bottom: 1pt dashed #000; padding-bottom: 2mm;"><?= htmlspecialchars($projectName) ?></div>
+                <?php endif; ?>
                 <?php if ($hora): ?>
                     <div class="v-hora">HORA: <?= $hora ?></div>
                 <?php endif; ?>
@@ -206,74 +135,13 @@
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const qrOpts = {
-            width: 180,
-            height: 180,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.H
-        };
-
-        // Generar QR para nominales
-        <?php foreach ($clientes as $c): 
-            $url = BASE_URL . 'index.php?page=voucher/ver/' . $c['codigo'];
-        ?>
-        new QRCode(document.getElementById('qr-<?= $c['codigo'] ?>'), { ...qrOpts, text: '<?= addslashes($url) ?>' });
-        <?php endforeach; ?>
-
-        // Generar QR para genéricos
-        <?php foreach ($genericos as $g): 
-            $url = BASE_URL . 'index.php?page=voucher/ver/' . $g['codigo'];
-        ?>
-        new QRCode(document.getElementById('qr-<?= $g['codigo'] ?>'), { ...qrOpts, text: '<?= addslashes($url) ?>' });
-        <?php endforeach; ?>
-
-        // Función para marcar como impresos
-        function marcarComoImpresos() {
-            const formData = new FormData();
-            formData.append('comanda_id', '<?= $comanda['id'] ?>');
-
-            fetch('index.php?page=voucher/marcarImpresos', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Tracking de impresión actualizado:', data);
-            })
-            .catch(error => {
-                console.error('Error al actualizar tracking:', error);
-            });
-        }
-
-        // Evento imprimir
-        document.getElementById('btnImprimir').addEventListener('click', function() {
-            marcarComoImpresos();
-            window.print();
-        });
-
-        // Toggle: solo vouchers sin imprimir
-        let soloNuevos = false;
-        document.getElementById('btnFiltroNuevos').addEventListener('click', function () {
-            soloNuevos = !soloNuevos;
-            this.classList.toggle('btn-outline-warning', !soloNuevos);
-            this.classList.toggle('btn-warning',         soloNuevos);
-            this.innerHTML = soloNuevos
-                ? '<i class="bi bi-funnel-fill me-1"></i>Mostrando sin imprimir'
-                : '<i class="bi bi-funnel me-1"></i>Solo sin imprimir';
-
-            const todos = document.querySelectorAll('.voucher-thermal');
-            let visibles = 0;
-            todos.forEach(v => {
-                const ocultar = soloNuevos && v.dataset.impreso === '1';
-                v.style.display = ocultar ? 'none' : '';
-                if (!ocultar) visibles++;
-            });
-            document.getElementById('nVisible').textContent = visibles;
-        });
-    });
+    const COMANDA_ID = <?= (int)$comanda['id'] ?>;
+    const QR_URLS    = <?= json_encode(array_merge(
+        array_map(function($c) { return ['id' => $c['codigo'], 'url' => BASE_URL . 'index.php?page=voucher/ver/' . $c['codigo']]; }, $clientes),
+        array_map(function($g) { return ['id' => $g['codigo'], 'url' => BASE_URL . 'index.php?page=voucher/ver/' . $g['codigo']]; }, $genericos)
+    )) ?>;
     </script>
+    <script src="<?= BASE_URL ?>public/static/voucher/imprimir.js"></script>
 
 </body>
 </html>

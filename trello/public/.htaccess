@@ -24,7 +24,7 @@ RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
 
     # CSP para archivos estáticos (CSS/JS/imágenes servidos directamente por Apache)
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; font-src 'self' cdn.jsdelivr.net data:; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; font-src 'self' cdn.jsdelivr.net data:; img-src 'self' data: https://images.unsplash.com https://*.unsplash.com; connect-src 'self'; frame-ancestors 'none';"
 
     # Elimina la firma del servidor (complementa ServerTokens en httpd.conf)
     Header always unset X-Powered-By

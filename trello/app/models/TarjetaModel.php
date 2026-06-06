@@ -1,6 +1,19 @@
 <?php
 class TarjetaModel extends Model
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->asegurarEsquema('trell_tarjetas');
+    }
+
+    public function marcarCompletada(int $id, int $completada): bool
+    {
+        $stmt = $this->conn->prepare("UPDATE trell_tarjetas SET completada = ? WHERE id = ?");
+        $stmt->bind_param('ii', $completada, $id);
+        return $stmt->execute();
+    }
+
     public function crear(int $lista_id, int $tablero_id, string $titulo, int $creado_por): ?array
     {
         app_log("Iniciando creación de tarjeta: Lista=$lista_id, Tablero=$tablero_id, Titulo=$titulo, Usuario=$creado_por");
